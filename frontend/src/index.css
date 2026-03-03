@@ -1,0 +1,67 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@600;700;800&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  color: #1e293b;
+  background-color: #eef2f7;
+  background-image:
+    radial-gradient(ellipse 800px 650px at 90% -5%,  rgba(99, 102, 241, 0.09), transparent),
+    radial-gradient(ellipse 600px 500px at -8% 55%,  rgba(59, 130, 246, 0.07), transparent),
+    radial-gradient(ellipse 500px 420px at 55% 105%, rgba(139, 92, 246, 0.06), transparent),
+    radial-gradient(ellipse 400px 350px at 20% 10%,  rgba(16, 185, 129, 0.04), transparent);
+  background-attachment: fixed;
+}
+
+h1,
+h2,
+.font-display {
+  font-family: 'Playfair Display', Georgia, 'Times New Roman', serif;
+}
+
+.container-width {
+  @apply mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8;
+}
+
+.btn-primary {
+  @apply rounded-xl bg-indigo-600 px-5 py-2.5 text-sm font-semibold text-white shadow-lg shadow-indigo-200 transition duration-300 hover:-translate-y-0.5 hover:bg-indigo-700;
+}
+
+.btn-secondary {
+  @apply rounded-xl border border-slate-300 bg-white px-5 py-2.5 text-sm font-semibold text-slate-700 transition duration-300 hover:-translate-y-0.5 hover:bg-slate-100;
+}
+
+.card {
+  @apply rounded-2xl border border-slate-200 bg-white p-6 shadow-card;
+}
+
+.panel {
+  @apply rounded-3xl border border-primary-100 bg-white/90 p-6 shadow-card backdrop-blur;
+}
+
+.section-title {
+  @apply text-3xl font-bold tracking-tight text-primary-900;
+}
+
+.section-subtitle {
+  @apply mt-3 max-w-3xl text-sm leading-7 text-slate-600;
+}
+
+.hero-grid {
+  background: transparent;
+}
+
+.glow-ring {
+  box-shadow: 0 0 0 1px rgba(47, 104, 255, 0.15), 0 12px 40px rgba(13, 39, 98, 0.12);
+}
+
+.glass-nav {
+  @apply border-b border-slate-200/70 bg-white/70 backdrop-blur-xl;
+}
