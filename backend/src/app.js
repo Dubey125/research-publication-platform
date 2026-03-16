@@ -80,6 +80,7 @@ app.get('/api/health', (_req, res) => {
 app.use('/uploads', express.static(path.join(__dirname, '..', process.env.UPLOAD_DIR || 'uploads')));
 
 app.use('/api/auth', authRoutes);
+app.use('/auth', authRoutes);
 app.use('/api/public', publicRoutes);
 app.use('/api/issues', issueRoutes);
 app.use('/api/papers', paperRoutes);
