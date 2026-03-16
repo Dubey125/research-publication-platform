@@ -33,6 +33,10 @@ Production-ready backend API for **International Journal of Advanced Interdiscip
    ```bash
    npm run seed:admin
    ```
+   If admin already exists and you need to overwrite credentials from env:
+   ```bash
+   npm run reset:admin
+   ```
 5. Start server:
    ```bash
    npm run dev

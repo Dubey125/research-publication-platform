@@ -11,18 +11,33 @@ const seedAdmin = async () => {
     const email = process.env.SEED_ADMIN_EMAIL;
     const password = process.env.SEED_ADMIN_PASSWORD;
     const name = process.env.SEED_ADMIN_NAME || 'IJAIF Admin';
+    const forceReset = process.argv.includes('--reset') || process.env.SEED_ADMIN_FORCE_RESET === 'true';
 
     if (!email || !password) {
       throw new Error('SEED_ADMIN_EMAIL and SEED_ADMIN_PASSWORD are required');
     }
 
-    const existing = await Admin.findOne({ email });
+    const normalizedEmail = email.trim().toLowerCase();
+
+    const existing = await Admin.findOne({ email: normalizedEmail });
     if (existing) {
-      console.log('Admin already exists.');
+      if (!forceReset) {
+        console.log('Admin already exists. Use --reset to overwrite credentials.');
+        process.exit(0);
+      }
+
+      existing.name = name;
+      existing.email = normalizedEmail;
+      existing.password = password;
+      existing.refreshTokenHash = null;
+      existing.refreshTokenExpiresAt = null;
+      await existing.save();
+
+      console.log('Admin credentials reset successfully.');
       process.exit(0);
     }
 
-    await Admin.create({ name, email, password });
+    await Admin.create({ name, email: normalizedEmail, password });
     console.log('Admin seeded successfully.');
     process.exit(0);
   } catch (error) {
