@@ -1,7 +1,23 @@
 import axios from 'axios';
 
+const rawBaseURL = (import.meta.env.VITE_API_URL || '').trim();
+
+const resolvedBaseURL = (() => {
+  if (!rawBaseURL) {
+    return 'http://localhost:5000/api';
+  }
+
+  // Keep relative dev proxy values as-is, but normalize absolute origins to include /api.
+  if (!/^https?:\/\//i.test(rawBaseURL)) {
+    return rawBaseURL;
+  }
+
+  const normalized = rawBaseURL.replace(/\/+$/, '');
+  return normalized.endsWith('/api') ? normalized : `${normalized}/api`;
+})();
+
 const api = axios.create({
-  baseURL: import.meta.env.VITE_API_URL || 'http://localhost:5000/api',
+  baseURL: resolvedBaseURL,
   withCredentials: true
 });
 
