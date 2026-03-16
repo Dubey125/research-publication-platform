@@ -1,5 +1,6 @@
 import fs from 'fs';
 import path from 'path';
+import crypto from 'crypto';
 import multer from 'multer';
 
 const uploadDir = process.env.UPLOAD_DIR || 'uploads';
@@ -12,13 +13,17 @@ if (!fs.existsSync(absoluteUploadDir)) {
 const storage = multer.diskStorage({
   destination: (_req, _file, cb) => cb(null, absoluteUploadDir),
   filename: (_req, file, cb) => {
-    const safeName = file.originalname.replace(/\s+/g, '-').toLowerCase();
-    cb(null, `${Date.now()}-${safeName}`);
+    const extension = path.extname(file.originalname || '').toLowerCase();
+    cb(null, `${Date.now()}-${crypto.randomUUID()}${extension}`);
   }
 });
 
 const fileFilter = (_req, file, cb) => {
-  if (file.mimetype !== 'application/pdf') {
+  const extension = path.extname(file.originalname || '').toLowerCase();
+  const isPdfMime = file.mimetype === 'application/pdf';
+  const isPdfExt = extension === '.pdf';
+
+  if (!isPdfMime || !isPdfExt) {
     cb(new Error('Only PDF files are allowed.'));
   } else {
     cb(null, true);
@@ -34,7 +39,9 @@ export const uploadPdf = multer({
 });
 
 const imageFilter = (_req, file, cb) => {
-  if (!file.mimetype.startsWith('image/')) {
+  const extension = path.extname(file.originalname || '').toLowerCase();
+  const allowedImageExtensions = new Set(['.jpg', '.jpeg', '.png', '.webp', '.gif']);
+  if (!file.mimetype.startsWith('image/') || !allowedImageExtensions.has(extension)) {
     cb(new Error('Only image files are allowed.'));
   } else {
     cb(null, true);

@@ -20,6 +20,9 @@ export const AuthProvider = ({ children }) => {
   };
 
   const logout = () => {
+    api.post('/auth/logout').catch(() => {
+      // Best-effort server-side token revocation.
+    });
     setAdmin(null);
     setToken(null);
     localStorage.removeItem('ijaif_admin');

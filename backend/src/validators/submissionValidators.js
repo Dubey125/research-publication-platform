@@ -9,3 +9,10 @@ export const submissionValidation = [
   body('declarationAccepted').custom((value) => value === true || value === 'true').withMessage('Declaration must be accepted'),
   body('honeypot').optional().custom((value) => !value).withMessage('Spam detected')
 ];
+
+export const submissionStatusValidation = [
+  body('status')
+    .isIn(['Pending', 'Under Review', 'Approved', 'Rejected'])
+    .withMessage('Invalid status'),
+  body('adminNotes').optional().trim().isLength({ max: 2000 })
+];

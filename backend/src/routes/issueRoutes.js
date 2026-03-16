@@ -3,12 +3,13 @@ import { createIssue, deleteIssue, getIssues, updateIssue } from '../controllers
 import { protect } from '../middlewares/auth.js';
 import { handleValidation } from '../middlewares/validate.js';
 import { issueValidation } from '../validators/issueValidators.js';
+import { idParamValidation } from '../validators/commonValidators.js';
 
 const router = Router();
 
 router.get('/', getIssues);
 router.post('/', protect, issueValidation, handleValidation, createIssue);
-router.put('/:id', protect, issueValidation, handleValidation, updateIssue);
-router.delete('/:id', protect, deleteIssue);
+router.put('/:id', protect, idParamValidation, issueValidation, handleValidation, updateIssue);
+router.delete('/:id', protect, idParamValidation, handleValidation, deleteIssue);
 
 export default router;

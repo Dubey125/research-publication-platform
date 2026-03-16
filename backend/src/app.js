@@ -1,6 +1,7 @@
 import path from 'path';
 import express from 'express';
 import cors from 'cors';
+import cookieParser from 'cookie-parser';
 import helmet from 'helmet';
 import hpp from 'hpp';
 import morgan from 'morgan';
@@ -23,12 +24,48 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const app = express();
+app.disable('x-powered-by');
+app.set('trust proxy', process.env.TRUST_PROXY || 1);
 
-app.use(helmet());
-app.use(cors({ origin: process.env.CLIENT_URL || '*', credentials: true }));
+const defaultOrigins = ['http://localhost:5173', 'http://127.0.0.1:5173'];
+const configuredOrigins = (process.env.CORS_ORIGIN || process.env.CLIENT_URL || '')
+  .split(',')
+  .map((origin) => origin.trim())
+  .filter(Boolean);
+
+const allowedOrigins = configuredOrigins.length ? configuredOrigins : defaultOrigins;
+
+const corsOrigin = (origin, callback) => {
+  if (!origin) {
+    return callback(null, true);
+  }
+
+  if (allowedOrigins.includes(origin)) {
+    return callback(null, true);
+  }
+
+  return callback(new Error('CORS origin not allowed'));
+};
+
+app.use(
+  helmet({
+    // Prevent browser blocking image/file responses when frontend and API run on different origins.
+    crossOriginResourcePolicy: { policy: 'cross-origin' },
+  })
+);
+app.use(
+  cors({
+    origin: corsOrigin,
+    credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
+  })
+);
+app.options('*', cors({ origin: corsOrigin, credentials: true }));
 app.use(globalLimiter);
+app.use(cookieParser());
 app.use(express.json({ limit: '2mb' }));
-app.use(express.urlencoded({ extended: true }));
+app.use(express.urlencoded({ extended: false, limit: '2mb' }));
 app.use(mongoSanitize());
 app.use(hpp());
 

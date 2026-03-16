@@ -1,4 +1,5 @@
 import Paper from '../models/Paper.js';
+import Issue from '../models/Issue.js';
 
 const parseCsvField = (value) => {
   if (!value) return [];
@@ -38,14 +39,29 @@ export const createPaper = async (req, res, next) => {
 
 export const getPapers = async (req, res, next) => {
   try {
-    const page = Number(req.query.page) || 1;
-    const limit = Math.min(Number(req.query.limit) || 10, 50);
+    const page = Math.max(Number(req.query.page) || 1, 1);
+    const limit = Math.min(Math.max(Number(req.query.limit) || 10, 1), 50);
     const skip = (page - 1) * limit;
 
     const query = {};
     if (req.query.category) query.category = req.query.category;
     if (req.query.issue) query.issue = req.query.issue;
-    if (req.query.year) query.year = Number(req.query.year);
+    if (req.query.year) {
+      const issueIds = await Issue.find({ year: Number(req.query.year) }).distinct('_id');
+      if (!issueIds.length) {
+        return res.json({
+          success: true,
+          papers: [],
+          pagination: {
+            page,
+            limit,
+            total: 0,
+            totalPages: 0
+          }
+        });
+      }
+      query.issue = { $in: issueIds };
+    }
 
     if (req.query.search) {
       query.$text = { $search: req.query.search };
