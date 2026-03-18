@@ -77,6 +77,10 @@ app.get('/api/health', (_req, res) => {
   res.json({ success: true, message: 'API healthy' });
 });
 
+app.get('/api/ping', (_req, res) => {
+  res.type('text/plain').send('ok');
+});
+
 app.use('/uploads', express.static(path.join(__dirname, '..', process.env.UPLOAD_DIR || 'uploads')));
 
 app.use('/api/auth', authRoutes);

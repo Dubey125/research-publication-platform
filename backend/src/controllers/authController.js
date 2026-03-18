@@ -30,7 +30,8 @@ const issueSessionTokens = async (res, admin) => {
 export const loginAdmin = async (req, res, next) => {
   try {
     const { email, password } = req.body;
-    const admin = await Admin.findOne({ email }).select('+password +refreshTokenHash +refreshTokenExpiresAt');
+    const normalizedEmail = email?.trim().toLowerCase();
+    const admin = await Admin.findOne({ email: normalizedEmail }).select('+password +refreshTokenHash +refreshTokenExpiresAt');
     if (!admin || !(await admin.comparePassword(password))) {
       return res.status(401).json({ success: false, message: 'Invalid credentials' });
     }
