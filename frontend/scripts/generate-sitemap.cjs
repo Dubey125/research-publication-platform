@@ -17,7 +17,7 @@ const routes = [
 ];
 
 (async () => {
-  const stream = new SitemapStream({ hostname: process.env.SITE_URL || 'https://ijaif.org' });
+  const stream = new SitemapStream({ hostname: process.env.SITE_URL || 'https://ijtse.org' });
   routes.forEach((url) => stream.write({ url, changefreq: 'weekly', priority: 0.8 }));
   stream.end();
   const sitemap = await streamToPromise(stream);

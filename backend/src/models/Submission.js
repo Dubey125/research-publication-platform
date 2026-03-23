@@ -12,7 +12,7 @@ const submissionSchema = new mongoose.Schema(
     declarationAccepted: { type: Boolean, required: true },
     status: {
       type: String,
-      enum: ['Pending', 'Under Review', 'Approved', 'Rejected'],
+      enum: ['Pending', 'Under Review', 'Accepted', 'Rejected'],
       default: 'Pending'
     },
     adminNotes: { type: String, trim: true, maxlength: 2000, default: '' },

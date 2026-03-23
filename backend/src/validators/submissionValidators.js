@@ -12,7 +12,7 @@ export const submissionValidation = [
 
 export const submissionStatusValidation = [
   body('status')
-    .isIn(['Pending', 'Under Review', 'Approved', 'Rejected'])
+    .isIn(['Pending', 'Under Review', 'Accepted', 'Rejected'])
     .withMessage('Invalid status'),
   body('adminNotes').optional().trim().isLength({ max: 2000 })
 ];

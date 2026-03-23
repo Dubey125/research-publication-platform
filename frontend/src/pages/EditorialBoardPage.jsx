@@ -23,7 +23,7 @@ const EditorialBoardPage = () => {
 
   return (
     <section className="container-width py-14">
-      <SEO title="Editorial Board | IJAIF" description="Editorial board of IJAIF" />
+      <SEO title="Editorial Board | International Journal of Transdisciplinary Science and Engineering" description="Editorial board information" />
       <h1 className="text-3xl font-bold text-primary-800">Editorial Board</h1>
       {loading ? <LoadingSpinner /> : null}
       {!loading && roleOrder.map((role) => {

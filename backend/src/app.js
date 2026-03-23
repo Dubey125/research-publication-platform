@@ -19,6 +19,8 @@ import editorialRoutes from './routes/editorialRoutes.js';
 import statsRoutes from './routes/statsRoutes.js';
 import contactRoutes from './routes/contactRoutes.js';
 import settingsRoutes from './routes/settingsRoutes.js';
+import contentRoutes from './routes/contentRoutes.js';
+import announcementRoutes from './routes/announcementRoutes.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -27,24 +29,29 @@ const app = express();
 app.disable('x-powered-by');
 app.set('trust proxy', process.env.TRUST_PROXY || 1);
 
-const defaultOrigins = ['http://localhost:5173', 'http://127.0.0.1:5173'];
+const defaultOrigins = ['http://localhost:5173', 'http://127.0.0.1:5173', 'http://localhost:5174', 'http://127.0.0.1:5174'];
 const configuredOrigins = (process.env.CORS_ORIGIN || process.env.CLIENT_URL || '')
   .split(',')
   .map((origin) => origin.trim())
   .filter(Boolean);
 
-const allowedOrigins = configuredOrigins.length ? configuredOrigins : defaultOrigins;
+// For development convenience, if we detect we're running locally, we can be more permissive.
+const allowedOrigins = [
+  ...defaultOrigins,
+  ...configuredOrigins
+];
 
 const corsOrigin = (origin, callback) => {
   if (!origin) {
     return callback(null, true);
   }
 
-  if (allowedOrigins.includes(origin)) {
+  // Allow any localhost origin in development, or strict check
+  if (allowedOrigins.includes(origin) || (process.env.NODE_ENV === 'development' && origin.startsWith('http://localhost:'))) {
     return callback(null, true);
   }
 
-  return callback(new Error('CORS origin not allowed'));
+  return callback(new Error('CORS origin not allowed: ' + origin));
 };
 
 app.use(
@@ -93,6 +100,8 @@ app.use('/api/editorial', editorialRoutes);
 app.use('/api/stats', statsRoutes);
 app.use('/api/contact', contactRoutes);
 app.use('/api/settings', settingsRoutes);
+app.use('/api/content', contentRoutes);
+app.use('/api/announcements', announcementRoutes);
 
 /* ── Serve built React app (production / tunnel mode) ──────── */
 const distPath = path.join(__dirname, '../../frontend/dist');

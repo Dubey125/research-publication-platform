@@ -7,7 +7,7 @@ const siteSettingsSchema = new mongoose.Schema(
     _singleton: { type: String, default: 'global', immutable: true },
 
     /* ── About ─────────────────────────────────────────────────── */
-    aboutTitle:   { type: String, trim: true, maxlength: 200, default: 'About IJAIF' },
+    aboutTitle:   { type: String, trim: true, maxlength: 200, default: 'About International Journal of Transdisciplinary Science and Engineering' },
     aboutText:    { type: String, trim: true, maxlength: 5000, default: '' },
     missionText:  { type: String, trim: true, maxlength: 2000, default: '' },
     visionText:   { type: String, trim: true, maxlength: 2000, default: '' },

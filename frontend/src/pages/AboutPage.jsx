@@ -3,7 +3,7 @@ import { useSiteSettings } from '../context/SiteSettingsContext';
 
 const FALLBACK = {
   aboutTitle:   'About the Journal',
-  aboutText:    'International Journal of Advanced Interdisciplinary Frontiers (IJAIF) is a peer-reviewed, open-access international journal dedicated to publishing high-quality research across diverse academic disciplines. The journal provides a global platform for researchers, academicians, professionals, and students to disseminate innovative research findings and emerging advancements.',
+  aboutText:    'International Journal of Transdisciplinary Science and Engineering is a peer-reviewed, open-access international journal dedicated to publishing high-quality research across diverse academic disciplines. The journal provides a global platform for researchers, academicians, professionals, and students to disseminate innovative research findings and emerging advancements.',
   missionText:  'Promote quality research that integrates knowledge across fields for meaningful societal impact.',
   visionText:   'Build a trusted interdisciplinary publication ecosystem with transparent and ethical scholarship.',
   journalISSN:  '',
@@ -17,7 +17,7 @@ const AboutPage = () => {
 
   return (
     <section className="container-width py-14">
-      <SEO title="About | IJAIF" description="About the International Journal of Advanced Interdisciplinary Frontiers" />
+      <SEO title="About | International Journal of Transdisciplinary Science and Engineering" description="About the International Journal of Transdisciplinary Science and Engineering" />
       <div className="panel">
         <h1 className="section-title">{s.aboutTitle}</h1>
         <p className="section-subtitle">{s.aboutText}</p>

@@ -44,9 +44,9 @@ const SubmitManuscriptPage = () => {
 
   return (
     <section className="container-width py-14">
-      <SEO title="Submit Manuscript | IJAIF" description="Submit your research manuscript to IJAIF" />
+      <SEO title="Submit Paper | International Journal of Transdisciplinary Science and Engineering" description="Submit your research paper" />
       <div className="mx-auto max-w-3xl card">
-        <h1 className="text-3xl font-bold text-primary-800">Submit Manuscript</h1>
+        <h1 className="text-3xl font-bold text-primary-800">Submit Paper</h1>
         <form className="mt-6 space-y-4" onSubmit={onSubmit}>
           <input className="w-full rounded-md border border-slate-300 px-3 py-2" placeholder="Author Name" value={form.authorName} onChange={(e) => setForm({ ...form, authorName: e.target.value })} required />
           <input className="w-full rounded-md border border-slate-300 px-3 py-2" type="email" placeholder="Email" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} required />

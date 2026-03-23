@@ -57,13 +57,18 @@ const HomePage = () => {
   const [loading, setLoading] = useState(true);
   const [latestPapers, setLatestPapers] = useState([]);
   const [currentIssue, setCurrentIssue] = useState(null);
+  const [announcements, setAnnouncements] = useState([]);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const { data } = await api.get('/public/home');
+        const [{ data }, { data: noticesData }] = await Promise.all([
+          api.get('/public/home'),
+          api.get('/announcements')
+        ]);
         setLatestPapers(data.latestPapers || []);
         setCurrentIssue(data.currentIssue || null);
+        setAnnouncements(noticesData.announcements || []);
       } finally {
         setLoading(false);
       }
@@ -74,9 +79,25 @@ const HomePage = () => {
   return (
     <>
       <SEO
-        title="IJAIF | Home"
-        description="International Journal of Advanced Interdisciplinary Frontiers publishes peer-reviewed, open-access interdisciplinary research."
+        title="International Journal of Transdisciplinary Science and Engineering | Home"
+        description="International Journal of Transdisciplinary Science and Engineering publishes peer-reviewed open-access research."
       />
+
+      {announcements.length > 0 && (
+        <section className="container-width pt-6">
+          <div className="rounded-2xl border border-amber-300/50 bg-gradient-to-r from-amber-200/80 via-amber-100/80 to-violet-200/70 p-4 shadow-lg shadow-amber-100/40 backdrop-blur">
+            <p className="text-xs font-bold uppercase tracking-[0.2em] text-amber-900">Announcements</p>
+            <div className="mt-2 space-y-2">
+              {announcements.slice(0, 3).map((item) => (
+                <article key={item._id} className="rounded-xl bg-white/75 px-4 py-3">
+                  <p className="text-sm font-bold text-slate-900">{item.title}</p>
+                  <p className="mt-1 text-sm text-slate-700">{item.message}</p>
+                </article>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
 
       {/* ─── HERO ─────────────────────────────────────────────────────── */}
       <section className="hero-grid relative overflow-hidden py-24 text-slate-900">
@@ -88,16 +109,16 @@ const HomePage = () => {
             </span>
             <h1 className="font-display mt-6 max-w-3xl text-5xl font-extrabold leading-[1.1] text-slate-900 lg:text-7xl">
               Publish Your{' '}
-              <span className="text-indigo-600">Advanced Interdisciplinary</span>{' '}
+              <span className="text-indigo-600">Transdisciplinary</span>{' '}
               Research
             </h1>
             <p className="mt-6 max-w-xl text-lg leading-relaxed text-slate-500">{TAGLINE}</p>
             <div className="mt-9 flex flex-wrap gap-4">
               <Link
-                to="/submit-manuscript"
+                to="/submit-paper"
                 className="inline-flex items-center gap-2 rounded-xl bg-indigo-600 px-7 py-3.5 text-sm font-bold text-white shadow-lg shadow-indigo-200 transition hover:bg-indigo-700"
               >
-                Submit Manuscript <ArrowRight size={16} />
+                Submit Paper <ArrowRight size={16} />
               </Link>
               <Link
                 to="/current-issue"
@@ -139,7 +160,7 @@ const HomePage = () => {
       {/* ─── ABOUT + FEATURED ARTICLES ────────────────────────────────── */}
       <section className="container-width py-16">
         <div className="grid gap-10 lg:grid-cols-3">
-          {/* About IJAIF (1/3) */}
+          {/* About Journal (1/3) */}
           <motion.div {...fadeInUp} className="lg:col-span-1">
             <div className="overflow-hidden rounded-3xl border border-slate-100 bg-white shadow-card">
               <img
@@ -148,11 +169,12 @@ const HomePage = () => {
                 className="h-48 w-full object-cover"
               />
               <div className="p-6">
-                <h2 className="font-display text-2xl font-bold text-slate-900">About IJAIF</h2>
+                <h2 className="font-display text-2xl font-bold text-slate-900">About The Journal</h2>
                 <p className="mt-3 text-sm leading-7 text-slate-600">
-                  IJAIF is a peer-reviewed, open-access international journal dedicated to publishing
-                  high-quality research across diverse academic disciplines. We connect the frontiers of
-                  knowledge through rigorous double-blind review and ethical publishing standards.
+                  International Journal of Transdisciplinary Science and Engineering is a peer-reviewed,
+                  open-access international journal dedicated to publishing high-quality research across
+                  connected disciplines. We bridge science and engineering through rigorous double-blind
+                  review and ethical publishing standards.
                 </p>
                 <div className="mt-5 space-y-3">
                   {JOURNAL_HIGHLIGHTS.map((item) => (
@@ -166,10 +188,10 @@ const HomePage = () => {
                   ))}
                 </div>
                 <Link
-                  to="/aims-scope"
+                  to="/policies"
                   className="mt-5 inline-flex items-center gap-1.5 text-sm font-semibold text-indigo-600 hover:text-indigo-800"
                 >
-                  Learn more <ArrowRight size={14} />
+                  Explore policies <ArrowRight size={14} />
                 </Link>
               </div>
             </div>
@@ -261,7 +283,7 @@ const HomePage = () => {
             </p>
             <div className="mt-8 flex flex-wrap justify-center gap-4">
               <Link
-                to="/submit-manuscript"
+                to="/submit-paper"
                 className="inline-flex items-center gap-2 rounded-xl bg-indigo-600 px-8 py-3.5 text-sm font-bold text-white shadow-lg shadow-indigo-900/50 transition hover:bg-indigo-500"
               >
                 SUBMIT NOW <ArrowRight size={16} />

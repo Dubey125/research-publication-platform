@@ -5,18 +5,18 @@ const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
   const [admin, setAdmin] = useState(() => {
-    const item = localStorage.getItem('ijaif_admin');
+    const item = localStorage.getItem('ijtse_admin');
     return item ? JSON.parse(item) : null;
   });
 
-  const [token, setToken] = useState(() => localStorage.getItem('ijaif_admin_token'));
+  const [token, setToken] = useState(() => localStorage.getItem('ijtse_admin_token'));
 
   const login = async (email, password) => {
     const { data } = await api.post('/auth/login', { email, password });
     setAdmin(data.admin);
     setToken(data.token);
-    localStorage.setItem('ijaif_admin', JSON.stringify(data.admin));
-    localStorage.setItem('ijaif_admin_token', data.token);
+    localStorage.setItem('ijtse_admin', JSON.stringify(data.admin));
+    localStorage.setItem('ijtse_admin_token', data.token);
   };
 
   const logout = () => {
@@ -25,8 +25,8 @@ export const AuthProvider = ({ children }) => {
     });
     setAdmin(null);
     setToken(null);
-    localStorage.removeItem('ijaif_admin');
-    localStorage.removeItem('ijaif_admin_token');
+    localStorage.removeItem('ijtse_admin');
+    localStorage.removeItem('ijtse_admin_token');
   };
 
   const value = useMemo(() => ({ admin, token, login, logout, isAuthenticated: !!token }), [admin, token]);

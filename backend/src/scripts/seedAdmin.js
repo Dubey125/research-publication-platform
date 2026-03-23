@@ -10,7 +10,7 @@ const seedAdmin = async () => {
 
     const email = process.env.SEED_ADMIN_EMAIL;
     const password = process.env.SEED_ADMIN_PASSWORD;
-    const name = process.env.SEED_ADMIN_NAME || 'IJAIF Admin';
+    const name = process.env.SEED_ADMIN_NAME || 'IJTSE Admin';
     const forceReset = process.argv.includes('--reset') || process.env.SEED_ADMIN_FORCE_RESET === 'true';
 
     if (!email || !password) {

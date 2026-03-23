@@ -41,7 +41,7 @@ const ContactPage = () => {
 
   return (
     <section className="container-width py-14">
-      <SEO title="Contact | IJAIF" description="Contact IJAIF editorial office" />
+      <SEO title="Contact | International Journal of Transdisciplinary Science and Engineering" description="Contact editorial office" />
       <h1 className="section-title">Contact Us</h1>
       <p className="section-subtitle">Reach out to the editorial office for queries, submissions, and collaborations.</p>
 

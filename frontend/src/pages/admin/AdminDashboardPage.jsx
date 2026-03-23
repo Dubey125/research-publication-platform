@@ -4,7 +4,7 @@ import {
   LayoutDashboard, BookOpen, FileText, Users, Inbox,
   Settings, LogOut, ChevronDown, ChevronUp, Edit2, Trash2,
   Check, X, Download, Eye, Star, RefreshCw, Filter,
-  PlusCircle, Save, AlertTriangle, Globe, Phone, MapPin, Link2
+  PlusCircle, Save, AlertTriangle, Globe, Phone, MapPin, Link2, Bell, FilePenLine
 } from 'lucide-react';
 import SEO from '../../components/SEO';
 import api from '../../utils/api';
@@ -16,7 +16,7 @@ const FILE_BASE = import.meta.env.VITE_FILE_BASE_URL || 'http://localhost:5000';
 const STATUS_STYLES = {
   Pending:       'bg-amber-100 text-amber-700',
   'Under Review':'bg-blue-100 text-blue-700',
-  Approved:      'bg-green-100 text-green-700',
+  Accepted:      'bg-green-100 text-green-700',
   Rejected:      'bg-red-100 text-red-700'
 };
 const inp = 'w-full rounded-lg border border-slate-300 bg-white px-3 py-2.5 text-sm focus:border-indigo-400 focus:outline-none focus:ring-2 focus:ring-indigo-100';
@@ -26,6 +26,8 @@ const navLinks = [
   { id: 'sec-papers',      label: 'Papers',          icon: FileText },
   { id: 'sec-editorial',   label: 'Editorial Board', icon: Users },
   { id: 'sec-submissions', label: 'Submissions',     icon: Inbox },
+  { id: 'sec-content',     label: 'Website Content', icon: FilePenLine },
+  { id: 'sec-announcements', label: 'Announcements', icon: Bell },
   { id: 'sec-siteinfo',    label: 'Site Info',       icon: Globe },
   { id: 'sec-settings',    label: 'Settings',        icon: Settings }
 ];
@@ -38,6 +40,14 @@ const defaultSiteInfo  = {
   socialFacebook: '', socialTwitter: '', socialLinkedIn: '', socialInstagram: '', socialYouTube: '', socialResearchGate: '',
   journalISSN: '', journalDOI: '', publisherName: ''
 };
+const contentTypeOptions = [
+  { value: 'policies', label: 'Policies' },
+  { value: 'copyright-form', label: 'Copyright Form' },
+  { value: 'licensing', label: 'Licensing' },
+  { value: 'publication-ethics', label: 'Publication Ethics' },
+  { value: 'author-guidelines', label: 'Author Guidelines' },
+  { value: 'peer-review-policy', label: 'Peer Review Policy' }
+];
 
 function Confirm({ message, onConfirm, onCancel }) {
   return (
@@ -85,7 +95,7 @@ const AdminDashboardPage = () => {
   const navigate = useNavigate();
   const { logout } = useAuth();
 
-  const [stats,       setStats]       = useState({ totalPapers: 0, totalIssues: 0, totalSubmissions: 0, pendingSubmissions: 0, underReviewSubmissions: 0, approvedSubmissions: 0, rejectedSubmissions: 0 });
+  const [stats,       setStats]       = useState({ totalPapers: 0, totalIssues: 0, totalSubmissions: 0, pendingSubmissions: 0, underReviewSubmissions: 0, acceptedSubmissions: 0, rejectedSubmissions: 0 });
   const [issues,      setIssues]      = useState([]);
   const [papers,      setPapers]      = useState([]);
   const [submissions, setSubmissions] = useState([]);
@@ -108,6 +118,10 @@ const AdminDashboardPage = () => {
   const [profileForm, setProfileForm] = useState({ name: '', email: '' });
   const [pwForm,      setPwForm]      = useState({ currentPassword: '', newPassword: '', confirmNew: '' });
   const [siteForm,    setSiteForm]    = useState(defaultSiteInfo);
+  const [contentType, setContentType] = useState('policies');
+  const [contentForm, setContentForm] = useState({ title: '', body: '' });
+  const [announcements, setAnnouncements] = useState([]);
+  const [announcementForm, setAnnouncementForm] = useState({ title: '', message: '', isActive: true });
 
   const [activeSection, setActiveSection] = useState('sec-stats');
   const [confirm,       setConfirm]       = useState(null);
@@ -116,23 +130,37 @@ const AdminDashboardPage = () => {
 
   const showToast = (type, text) => setToast({ type, text });
 
+  const loadContentByType = async (type) => {
+    try {
+      const { data } = await api.get(`/content/${type}`);
+      setContentForm({
+        title: data.content?.title || '',
+        body: data.content?.body || ''
+      });
+    } catch {
+      showToast('error', 'Failed to load content.');
+    }
+  };
+
   const loadAll = async () => {
     setLoading(true);
     try {
-      const [s, i, p, sub, ed, me, site] = await Promise.all([
+      const [s, i, p, sub, ed, me, site, announce] = await Promise.all([
         api.get('/stats'),
         api.get('/issues'),
         api.get('/papers', { params: { limit: 200 } }),
         api.get('/submissions'),
         api.get('/editorial'),
         api.get('/auth/me'),
-        api.get('/settings')
+        api.get('/settings'),
+        api.get('/announcements/admin')
       ]);
       setStats(s.data.stats || {});
       setIssues(i.data.issues || []);
       setPapers(p.data.papers || []);
       setSubmissions(sub.data.submissions || []);
       setEditorial(ed.data.members || []);
+      setAnnouncements(announce.data.announcements || []);
       setProfileForm({ name: me.data.admin?.name || '', email: me.data.admin?.email || '' });
       if (site.data.settings) setSiteForm((prev) => ({ ...prev, ...site.data.settings }));
     } catch {
@@ -143,6 +171,7 @@ const AdminDashboardPage = () => {
   };
 
   useEffect(() => { loadAll(); }, []);
+  useEffect(() => { loadContentByType(contentType); }, [contentType]);
 
   useEffect(() => {
     const els = navLinks.map((n) => document.getElementById(n.id)).filter(Boolean);
@@ -257,6 +286,51 @@ const AdminDashboardPage = () => {
   });
   const filteredSubs = subFilter === 'All' ? submissions : submissions.filter((s) => s.status === subFilter);
 
+  /* WEBSITE CONTENT */
+  const handleContentSave = async (e) => {
+    e.preventDefault();
+    try {
+      await api.post(`/content/${contentType}`, contentForm);
+      showToast('success', 'Website content saved.');
+      loadContentByType(contentType);
+    } catch (err) {
+      showToast('error', err?.response?.data?.message || 'Failed to save content.');
+    }
+  };
+
+  /* ANNOUNCEMENTS */
+  const handleAnnouncementCreate = async (e) => {
+    e.preventDefault();
+    try {
+      await api.post('/announcements', announcementForm);
+      setAnnouncementForm({ title: '', message: '', isActive: true });
+      showToast('success', 'Announcement created.');
+      loadAll();
+    } catch (err) {
+      showToast('error', err?.response?.data?.message || 'Failed to create announcement.');
+    }
+  };
+
+  const handleAnnouncementDelete = (id) => setConfirm({
+    message: 'Delete this announcement?',
+    onConfirm: async () => {
+      await api.delete(`/announcements/${id}`);
+      setConfirm(null);
+      showToast('success', 'Announcement deleted.');
+      loadAll();
+    }
+  });
+
+  const handleAnnouncementToggle = async (notice) => {
+    try {
+      await api.patch(`/announcements/${notice._id}`, { isActive: !notice.isActive });
+      showToast('success', `Announcement marked as ${!notice.isActive ? 'active' : 'inactive'}.`);
+      loadAll();
+    } catch {
+      showToast('error', 'Failed to update announcement status.');
+    }
+  };
+
   /* SITE INFO */
   const handleSiteInfoSave = async (e) => {
     e.preventDefault();
@@ -286,7 +360,7 @@ const AdminDashboardPage = () => {
   /* RENDER */
   return (
     <div className="min-h-screen">
-      <SEO title="Admin Dashboard | IJAIF" description="Manage IJAIF journal content" />
+      <SEO title="Admin Dashboard | International Journal of Transdisciplinary Science and Engineering" description="Manage International Journal of Transdisciplinary Science and Engineering journal content" />
       {confirm && <Confirm message={confirm.message} onConfirm={confirm.onConfirm} onCancel={() => setConfirm(null)} />}
       <Toast msg={toast} onClose={() => setToast({ type: '', text: '' })} />
 
@@ -342,7 +416,7 @@ const AdminDashboardPage = () => {
                 { label: 'Total Submissions',   value: stats.totalSubmissions,       bg: 'bg-violet-50',  text: 'text-violet-700' },
                 { label: 'Pending',             value: stats.pendingSubmissions,     bg: 'bg-amber-50',   text: 'text-amber-700' },
                 { label: 'Under Review',        value: stats.underReviewSubmissions, bg: 'bg-blue-50',    text: 'text-blue-700' },
-                { label: 'Approved',            value: stats.approvedSubmissions,    bg: 'bg-green-50',   text: 'text-green-700' },
+                { label: 'Accepted',            value: stats.acceptedSubmissions,    bg: 'bg-green-50',   text: 'text-green-700' },
                 { label: 'Rejected',            value: stats.rejectedSubmissions,    bg: 'bg-red-50',     text: 'text-red-700' },
                 { label: 'Editorial Members',   value: editorial.length,             bg: 'bg-rose-50',    text: 'text-rose-700' }
               ].map(({ label, value, text }) => (
@@ -510,7 +584,7 @@ const AdminDashboardPage = () => {
                     <option>All</option>
                     <option>Pending</option>
                     <option>Under Review</option>
-                    <option>Approved</option>
+                    <option>Accepted</option>
                     <option>Rejected</option>
                   </select>
                 </div>
@@ -573,12 +647,27 @@ const AdminDashboardPage = () => {
                       </div>
 
                       <div className="flex flex-wrap items-center gap-2">
-                        {['Pending', 'Under Review', 'Approved', 'Rejected'].map((status) => (
-                          <button key={status} onClick={() => setStatus(s._id, status)} disabled={s.status === status}
-                            className={`rounded-lg px-3 py-1.5 text-xs font-semibold transition disabled:opacity-40 ${STATUS_STYLES[status]}`}>
-                            {status}
-                          </button>
-                        ))}
+                        <button
+                          onClick={() => setStatus(s._id, 'Under Review')}
+                          disabled={s.status === 'Under Review'}
+                          className="rounded-lg bg-blue-100 px-3 py-1.5 text-xs font-semibold text-blue-700 transition disabled:opacity-40"
+                        >
+                          Mark as Under Review
+                        </button>
+                        <button
+                          onClick={() => setStatus(s._id, 'Accepted')}
+                          disabled={s.status === 'Accepted'}
+                          className="rounded-lg bg-green-100 px-3 py-1.5 text-xs font-semibold text-green-700 transition disabled:opacity-40"
+                        >
+                          Accept
+                        </button>
+                        <button
+                          onClick={() => setStatus(s._id, 'Rejected')}
+                          disabled={s.status === 'Rejected'}
+                          className="rounded-lg bg-red-100 px-3 py-1.5 text-xs font-semibold text-red-700 transition disabled:opacity-40"
+                        >
+                          Reject
+                        </button>
                         <a href={`${FILE_BASE}${s.manuscriptUrl}`} target="_blank" rel="noreferrer" className="flex items-center gap-1.5 rounded-lg border border-slate-200 bg-slate-50 px-3 py-1.5 text-xs font-semibold text-slate-700 hover:bg-slate-100 transition">
                           <Eye size={12} /> View PDF
                         </a>
@@ -596,6 +685,110 @@ const AdminDashboardPage = () => {
             </div>
           </section>
 
+          {/* WEBSITE CONTENT MANAGEMENT */}
+          <section id="sec-content" className="scroll-mt-24">
+            <h2 className="section-title mb-1">Website Content Management</h2>
+            <p className="mb-5 text-sm text-slate-500">Edit policies text, copyright text, licensing terms, and save updates to database content blocks.</p>
+            <form onSubmit={handleContentSave} className="panel space-y-4">
+              <div className="grid gap-3 sm:grid-cols-2">
+                <div>
+                  <label className="mb-1 block text-xs font-semibold text-slate-500">Content Type</label>
+                  <select className={inp} value={contentType} onChange={(e) => setContentType(e.target.value)}>
+                    {contentTypeOptions.map((option) => (
+                      <option key={option.value} value={option.value}>{option.label}</option>
+                    ))}
+                  </select>
+                </div>
+                <div>
+                  <label className="mb-1 block text-xs font-semibold text-slate-500">Title</label>
+                  <input className={inp} value={contentForm.title} onChange={(e) => setContentForm({ ...contentForm, title: e.target.value })} required />
+                </div>
+              </div>
+              <div>
+                <label className="mb-1 block text-xs font-semibold text-slate-500">Body</label>
+                <textarea
+                  className={inp}
+                  rows={12}
+                  value={contentForm.body}
+                  onChange={(e) => setContentForm({ ...contentForm, body: e.target.value })}
+                  placeholder="Use sections with '## Heading' and paragraph blocks separated by blank lines."
+                  required
+                />
+              </div>
+              <div className="flex justify-end">
+                <button className="btn-primary flex items-center gap-2" type="submit"><Save size={15} /> Save Website Content</button>
+              </div>
+            </form>
+          </section>
+
+          {/* ANNOUNCEMENTS */}
+          <section id="sec-announcements" className="scroll-mt-24">
+            <h2 className="section-title mb-4">Announcements</h2>
+            <div className="grid gap-6 lg:grid-cols-2">
+              <form onSubmit={handleAnnouncementCreate} className="panel space-y-3">
+                <p className="flex items-center gap-2 font-semibold text-slate-800"><Bell size={17} className="text-amber-500" />Create Announcement</p>
+                <input
+                  className={inp}
+                  placeholder="Announcement title"
+                  value={announcementForm.title}
+                  onChange={(e) => setAnnouncementForm({ ...announcementForm, title: e.target.value })}
+                  required
+                />
+                <textarea
+                  className={inp}
+                  rows={4}
+                  placeholder="Announcement message"
+                  value={announcementForm.message}
+                  onChange={(e) => setAnnouncementForm({ ...announcementForm, message: e.target.value })}
+                  required
+                />
+                <label className="flex cursor-pointer items-center gap-2 text-sm text-slate-600">
+                  <input
+                    type="checkbox"
+                    className="rounded"
+                    checked={announcementForm.isActive}
+                    onChange={(e) => setAnnouncementForm({ ...announcementForm, isActive: e.target.checked })}
+                  />
+                  Active announcement
+                </label>
+                <button className="btn-primary flex items-center gap-2" type="submit"><Save size={15} /> Publish Announcement</button>
+              </form>
+
+              <div className="panel">
+                <p className="mb-3 font-semibold text-slate-800">All Announcements ({announcements.length})</p>
+                <div className="max-h-96 space-y-2 overflow-y-auto pr-1">
+                  {announcements.length === 0 && <p className="text-sm text-slate-400">No announcements yet.</p>}
+                  {announcements.map((notice) => (
+                    <div key={notice._id} className="rounded-xl border border-slate-100 bg-slate-50 px-4 py-3">
+                      <div className="flex items-start justify-between gap-3">
+                        <div>
+                          <p className="text-sm font-semibold text-slate-900">{notice.title}</p>
+                          <p className="mt-1 text-xs text-slate-600">{notice.message}</p>
+                        </div>
+                        <div className="flex items-center gap-1.5">
+                          <button
+                            onClick={() => handleAnnouncementToggle(notice)}
+                            className={`rounded-lg border p-1.5 transition ${notice.isActive ? 'border-amber-300 bg-amber-50 text-amber-700 hover:bg-amber-100' : 'border-green-300 bg-green-50 text-green-700 hover:bg-green-100'}`}
+                            title={notice.isActive ? 'Deactivate' : 'Activate'}
+                          >
+                            {notice.isActive ? <X size={14} /> : <Check size={14} />}
+                          </button>
+                          <button onClick={() => handleAnnouncementDelete(notice._id)} className="rounded-lg border border-red-200 bg-red-50 p-1.5 text-red-600 hover:bg-red-100 transition"><Trash2 size={14} /></button>
+                        </div>
+                      </div>
+                      <div className="mt-2 flex items-center gap-2">
+                        <span className={`rounded-full px-2 py-0.5 text-[10px] font-bold ${notice.isActive ? 'bg-green-100 text-green-700' : 'bg-slate-200 text-slate-600'}`}>
+                          {notice.isActive ? 'Active' : 'Inactive'}
+                        </span>
+                        <span className="text-[10px] text-slate-500">{new Date(notice.date || notice.createdAt).toLocaleDateString()}</span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </section>
+
           {/* SITE INFO */}
           <section id="sec-siteinfo" className="scroll-mt-24">
             <h2 className="section-title mb-1">Site Information</h2>
@@ -606,7 +799,7 @@ const AdminDashboardPage = () => {
               {/* About */}
               <div className="panel space-y-3">
                 <p className="flex items-center gap-2 font-semibold text-slate-800"><Globe size={17} className="text-indigo-500" />About the Journal</p>
-                <input className={inp} placeholder="Section heading (e.g. About IJAIF)" value={siteForm.aboutTitle} onChange={(e) => setSiteForm({ ...siteForm, aboutTitle: e.target.value })} />
+                <input className={inp} placeholder="Section heading (e.g. About International Journal of Transdisciplinary Science and Engineering)" value={siteForm.aboutTitle} onChange={(e) => setSiteForm({ ...siteForm, aboutTitle: e.target.value })} />
                 <div>
                   <label className="mb-1 block text-xs font-semibold text-slate-500">About / Overview Text</label>
                   <textarea className={inp} rows={5} placeholder="Describe the journal, its scope, and goals..." value={siteForm.aboutText} onChange={(e) => setSiteForm({ ...siteForm, aboutText: e.target.value })} />
@@ -628,7 +821,7 @@ const AdminDashboardPage = () => {
                   </div>
                   <div>
                     <label className="mb-1 block text-xs font-semibold text-slate-500">DOI Prefix</label>
-                    <input className={inp} placeholder="e.g. 10.1234/ijaif" value={siteForm.journalDOI} onChange={(e) => setSiteForm({ ...siteForm, journalDOI: e.target.value })} />
+                    <input className={inp} placeholder="e.g. 10.1234/ijtse" value={siteForm.journalDOI} onChange={(e) => setSiteForm({ ...siteForm, journalDOI: e.target.value })} />
                   </div>
                   <div>
                     <label className="mb-1 block text-xs font-semibold text-slate-500">Publisher Name</label>

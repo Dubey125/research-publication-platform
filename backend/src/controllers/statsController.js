@@ -4,13 +4,13 @@ import Submission from '../models/Submission.js';
 
 export const getDashboardStats = async (_req, res, next) => {
   try {
-    const [totalPapers, totalIssues, totalSubmissions, pendingSubmissions, underReviewSubmissions, approvedSubmissions, rejectedSubmissions] = await Promise.all([
+    const [totalPapers, totalIssues, totalSubmissions, pendingSubmissions, underReviewSubmissions, acceptedSubmissions, rejectedSubmissions] = await Promise.all([
       Paper.countDocuments(),
       Issue.countDocuments(),
       Submission.countDocuments(),
       Submission.countDocuments({ status: 'Pending' }),
       Submission.countDocuments({ status: 'Under Review' }),
-      Submission.countDocuments({ status: 'Approved' }),
+      Submission.countDocuments({ status: { $in: ['Accepted', 'Approved'] } }),
       Submission.countDocuments({ status: 'Rejected' })
     ]);
 
@@ -22,7 +22,7 @@ export const getDashboardStats = async (_req, res, next) => {
         totalSubmissions,
         pendingSubmissions,
         underReviewSubmissions,
-        approvedSubmissions,
+        acceptedSubmissions,
         rejectedSubmissions
       }
     });

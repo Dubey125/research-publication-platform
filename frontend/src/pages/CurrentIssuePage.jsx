@@ -26,7 +26,7 @@ const CurrentIssuePage = () => {
 
   return (
     <section className="container-width py-14">
-      <SEO title="Current Issue | IJAIF" description="Current issue and published papers of IJAIF" />
+      <SEO title="Current Issue | International Journal of Transdisciplinary Science and Engineering" description="Current issue and published papers" />
       <div className="panel">
         <h1 className="section-title">Current Issue</h1>
         <p className="section-subtitle">Explore the latest peer-reviewed publications from the current volume.</p>

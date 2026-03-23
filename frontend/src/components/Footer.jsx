@@ -30,10 +30,10 @@ const Footer = () => {
         {/* Brand */}
         <div>
           <div className="flex items-center gap-3">
-            <span className="inline-flex h-9 w-9 items-center justify-center rounded-full bg-indigo-600 text-xs font-bold text-white">IJ</span>
+            <span className="inline-flex h-9 w-9 items-center justify-center rounded-full bg-amber-400 text-xs font-bold text-slate-900">TS</span>
             <span>
               <span className="block text-[10px] font-semibold uppercase tracking-[0.22em] text-indigo-400">Academic Journal</span>
-              <span className="block text-sm font-bold text-white">IJAIF</span>
+              <span className="block text-sm font-bold text-white">International Journal of Transdisciplinary Science and Engineering</span>
             </span>
           </div>
           <p className="mt-4 max-w-xs text-sm leading-7 text-slate-400">{TAGLINE}</p>
@@ -50,10 +50,12 @@ const Footer = () => {
           <h4 className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-400">Quick Links</h4>
           <ul className="mt-4 space-y-2.5">
             {[
-              { to: '/aims-scope',     label: 'Aims & Scope' },
+              { to: '/about', label: 'About' },
+              { to: '/current-issue', label: 'Issues' },
+              { to: '/submit-paper', label: 'Submit Paper' },
               { to: '/editorial-board',label: 'Editorial Board' },
+              { to: '/policies', label: 'Policies' },
               { to: '/author-guidelines', label: 'Author Guidelines' },
-              { to: '/archives',       label: 'Archives' },
               { to: '/contact',        label: 'Contact' }
             ].map((link) => (
               <li key={link.to}>
@@ -83,7 +85,7 @@ const Footer = () => {
       </div>
 
       <div className="border-t border-slate-800 py-5 text-center text-xs text-slate-500">
-        © {new Date().getFullYear()} IJAIF. All rights reserved.
+        © {new Date().getFullYear()} International Journal of Transdisciplinary Science and Engineering. All rights reserved.
       </div>
     </footer>
   );

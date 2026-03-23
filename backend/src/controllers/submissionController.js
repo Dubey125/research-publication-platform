@@ -1,5 +1,5 @@
 import Submission from '../models/Submission.js';
-import sendEmail from '../utils/sendEmail.js';
+import { sendEmail } from '../services/mailService.js';
 
 const parseKeywords = (value) => {
   if (!value) return [];
@@ -9,6 +9,19 @@ const parseKeywords = (value) => {
     .map((item) => item.trim())
     .filter(Boolean);
 };
+
+// HTML Templates for Emails
+const getEmailTemplate = (title, message) => `
+  <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #e0e0e0; border-radius: 8px;">
+    <h2 style="color: #2c3e50; border-bottom: 2px solid #3498db; padding-bottom: 10px;">${title}</h2>
+    <div style="font-size: 16px; color: #333; line-height: 1.6;">
+      ${message}
+    </div>
+    <div style="margin-top: 30px; font-size: 14px; color: #7f8c8d; border-top: 1px solid #e0e0e0; padding-top: 10px;">
+      <p>Best regards,<br><strong>Editorial Team</strong><br>International Journal of Transdisciplinary Science and Engineering</p>
+    </div>
+  </div>
+`;
 
 export const createSubmission = async (req, res, next) => {
   try {
@@ -27,11 +40,26 @@ export const createSubmission = async (req, res, next) => {
       declarationAccepted: req.body.declarationAccepted === true || req.body.declarationAccepted === 'true'
     });
 
-    await sendEmail({
-      to: process.env.ADMIN_NOTIFY_EMAIL,
-      subject: `New manuscript submission: ${submission.paperTitle}`,
-      text: `A new submission has been received from ${submission.authorName} (${submission.email}).`
-    });
+    // 1. Send email to ADMIN
+    const adminSubject = "New Paper Submission Received";
+    const adminMessage = `
+      <p>A new paper has been submitted to the journal.</p>
+      <p><strong>Paper Title:</strong> ${submission.paperTitle}</p>
+      <p><strong>Author Name:</strong> ${submission.authorName}</p>
+      <p><strong>Author Email:</strong> <a href="mailto:${submission.email}">${submission.email}</a></p>
+      <p>Please log in to the admin panel to review the submission.</p>
+    `;
+    await sendEmail(process.env.ADMIN_NOTIFY_EMAIL, adminSubject, getEmailTemplate(adminSubject, adminMessage));
+
+    // 2. Send email to AUTHOR
+    const authorSubject = "Paper Submission Received - International Journal of Transdisciplinary Science and Engineering";
+    const authorMessage = `
+      <p>Dear ${submission.authorName},</p>
+      <p>Thank you for submitting your manuscript to the International Journal of Transdisciplinary Science and Engineering.</p>
+      <p><strong>Paper Title:</strong> ${submission.paperTitle}</p>
+      <p>Your paper is currently under initial review. We will notify you once the status changes or if we require any further information.</p>
+    `;
+    await sendEmail(submission.email, authorSubject, getEmailTemplate("Submission Received", authorMessage));
 
     return res.status(201).json({ success: true, submission, message: 'Submission received successfully' });
   } catch (error) {
@@ -42,12 +70,21 @@ export const createSubmission = async (req, res, next) => {
 export const getSubmissions = async (req, res, next) => {
   try {
     const status = req.query.status;
-    const query = status ? { status } : {};
+    const query = status
+      ? status === 'Accepted'
+        ? { status: { $in: ['Accepted', 'Approved'] } }
+        : { status }
+      : {};
     const submissions = await Submission.find(query)
       .sort({ createdAt: -1 })
       .populate('reviewedBy', 'name email');
 
-    return res.json({ success: true, submissions });
+    const normalized = submissions.map((item) => ({
+      ...item.toObject(),
+      status: item.status === 'Approved' ? 'Accepted' : item.status
+    }));
+
+    return res.json({ success: true, submissions: normalized });
   } catch (error) {
     return next(error);
   }
@@ -56,11 +93,13 @@ export const getSubmissions = async (req, res, next) => {
 export const updateSubmissionStatus = async (req, res, next) => {
   try {
     const { status, adminNotes } = req.body;
-    if (!['Approved', 'Rejected', 'Pending', 'Under Review'].includes(status)) {
+    const normalizedStatus = status === 'Approved' ? 'Accepted' : status;
+
+    if (!['Accepted', 'Rejected', 'Pending', 'Under Review'].includes(normalizedStatus)) {
       return res.status(400).json({ success: false, message: 'Invalid status' });
     }
 
-    const update = { status, reviewedBy: req.admin._id };
+    const update = { status: normalizedStatus, reviewedBy: req.admin._id };
     if (adminNotes !== undefined) update.adminNotes = adminNotes;
 
     const submission = await Submission.findByIdAndUpdate(
@@ -71,6 +110,38 @@ export const updateSubmissionStatus = async (req, res, next) => {
 
     if (!submission) {
       return res.status(404).json({ success: false, message: 'Submission not found' });
+    }
+
+    const statusMessages = {
+      'Under Review': {
+        subject: 'Your Paper is Under Review',
+        title: 'Your Paper is Under Review',
+        htmlMessage: `
+          <p>Dear ${submission.authorName},</p>
+          <p>Your paper titled "${submission.paperTitle}" is currently under review.</p>
+        `
+      },
+      Accepted: {
+        subject: 'Congratulations! Paper Accepted',
+        title: 'Congratulations! Paper Accepted',
+        htmlMessage: `
+          <p>Dear ${submission.authorName},</p>
+          <p>Your paper "${submission.paperTitle}" has been accepted for publication.</p>
+        `
+      },
+      Rejected: {
+        subject: 'Paper Submission Update',
+        title: 'Paper Submission Update',
+        htmlMessage: `
+          <p>Dear ${submission.authorName},</p>
+          <p>We regret to inform you that your paper "${submission.paperTitle}" was not accepted.</p>
+        `
+      }
+    };
+
+    if (statusMessages[normalizedStatus]) {
+      const { subject, title, htmlMessage } = statusMessages[normalizedStatus];
+      await sendEmail(submission.email, subject, getEmailTemplate(title, htmlMessage));
     }
 
     return res.json({ success: true, submission });

@@ -26,7 +26,7 @@ const msFromDuration = (duration) => {
   return amount * multipliers[unit];
 };
 
-export const refreshCookieName = process.env.REFRESH_COOKIE_NAME || 'ijaif_refresh_token';
+export const refreshCookieName = process.env.REFRESH_COOKIE_NAME || 'ijtse_refresh_token';
 
 export const refreshCookieOptions = {
   httpOnly: true,

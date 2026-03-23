@@ -28,7 +28,7 @@ const AdminLoginPage = () => {
 
   return (
     <section className="container-width py-14">
-      <SEO title="Admin Login | IJAIF" description="Secure admin access for IJAIF" />
+      <SEO title="Admin Login | International Journal of Transdisciplinary Science and Engineering" description="Secure admin access" />
       <div className="mx-auto max-w-md panel glow-ring">
         <p className="text-xs font-semibold uppercase tracking-[0.18em] text-primary-600">Editorial Control Center</p>
         <h1 className="mt-3 text-2xl font-bold text-primary-900">Admin Login</h1>

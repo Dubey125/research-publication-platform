@@ -3,11 +3,11 @@ import { CATEGORIES } from '../utils/constants';
 
 const AimsScopePage = () => (
   <section className="container-width py-14">
-    <SEO title="Aims & Scope | IJAIF" description="Research scope and disciplines covered by IJAIF" />
+    <SEO title="Aims & Scope | International Journal of Transdisciplinary Science and Engineering" description="Research scope and disciplines covered by International Journal of Transdisciplinary Science and Engineering" />
     <div className="panel">
       <h1 className="section-title">Aims & Scope</h1>
       <p className="section-subtitle">
-        IJAIF welcomes rigorous, novel, and interdisciplinary research that bridges theory and practice across major academic domains.
+        International Journal of Transdisciplinary Science and Engineering welcomes rigorous, novel, and interdisciplinary research that bridges theory and practice across major academic domains.
       </p>
     </div>
     <div className="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">

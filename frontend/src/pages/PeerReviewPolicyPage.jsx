@@ -1,27 +1,19 @@
-import SEO from '../components/SEO';
+import PolicyPageShell from '../components/PolicyPageShell';
+import { useContentByType } from '../utils/content';
 
-const reviewStages = [
-  'Double-blind review process is followed for all eligible manuscripts.',
-  'Each manuscript is evaluated by a minimum of 2 independent reviewers.',
-  'Editorial decisions are based on quality, originality, and relevance with transparent communication to authors.'
-];
+const PeerReviewPolicyPage = () => {
+  const { content, loading } = useContentByType('peer-review-policy');
 
-const PeerReviewPolicyPage = () => (
-  <section className="container-width py-14">
-    <SEO title="Peer Review Policy | IJAIF" description="Peer review process followed by IJAIF" />
-    <div className="panel">
-      <h1 className="section-title">Peer Review Policy</h1>
-      <p className="section-subtitle">A transparent, evidence-based review workflow is used to maintain publication quality.</p>
-      <ul className="mt-6 space-y-4 text-slate-700">
-        {reviewStages.map((item, index) => (
-          <li key={item} className="rounded-xl border border-primary-100 bg-white p-4 leading-7">
-            <span className="mr-2 rounded-md bg-primary-50 px-2 py-1 text-xs font-bold text-primary-700">Stage {index + 1}</span>
-            {item}
-          </li>
-        ))}
-      </ul>
-    </div>
-  </section>
-);
+  return (
+    <PolicyPageShell
+      seoTitle="Peer Review Policy | International Journal of Transdisciplinary Science and Engineering"
+      seoDescription="Double-blind review process and editorial decision flow."
+      title={content?.title || 'Peer Review Policy'}
+      subtitle="Our review process focuses on fairness, methodological rigor, and field relevance."
+      content={content}
+      loading={loading}
+    />
+  );
+};
 
 export default PeerReviewPolicyPage;

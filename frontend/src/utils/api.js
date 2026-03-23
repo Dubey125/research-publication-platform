@@ -22,7 +22,7 @@ const api = axios.create({
 });
 
 api.interceptors.request.use((config) => {
-  const token = localStorage.getItem('ijaif_admin_token');
+  const token = localStorage.getItem('ijtse_admin_token');
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
   }
@@ -51,14 +51,14 @@ api.interceptors.response.use(
       originalRequest._retry = true;
       const { data } = await api.post('/auth/refresh');
       if (data?.token) {
-        localStorage.setItem('ijaif_admin_token', data.token);
+        localStorage.setItem('ijtse_admin_token', data.token);
         originalRequest.headers = originalRequest.headers || {};
         originalRequest.headers.Authorization = `Bearer ${data.token}`;
       }
       return api(originalRequest);
     } catch (refreshError) {
-      localStorage.removeItem('ijaif_admin');
-      localStorage.removeItem('ijaif_admin_token');
+      localStorage.removeItem('ijtse_admin');
+      localStorage.removeItem('ijtse_admin_token');
       return Promise.reject(refreshError);
     }
   }

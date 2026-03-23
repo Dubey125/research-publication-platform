@@ -34,7 +34,7 @@ const ArchivesPage = () => {
 
   return (
     <section className="container-width py-14">
-      <SEO title="Archives | IJAIF" description="Browse archived issues and papers" />
+      <SEO title="Archives | International Journal of Transdisciplinary Science and Engineering" description="Browse archived issues and papers" />
       <div className="panel">
         <h1 className="section-title">Archives</h1>
         <p className="section-subtitle">Search and filter previous volumes, issues, and published manuscripts.</p>

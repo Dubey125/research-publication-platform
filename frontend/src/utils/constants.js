@@ -1,11 +1,11 @@
-export const SITE_NAME = 'International Journal of Advanced Interdisciplinary Frontiers (IJAIF)';
-export const TAGLINE = 'Bridging Disciplines, Advancing Knowledge';
+export const SITE_NAME = 'International Journal of Transdisciplinary Science and Engineering';
+export const TAGLINE = 'Connecting disciplines, engineering reliable science, and advancing impactful knowledge.';
 
 export const JOURNAL_CONTACT = {
-  officialEmail: 'hello@ijaif-journal.test',
-  submissionEmail: 'submit@ijaif-journal.test',
+  officialEmail: 'hello@ijtse-journal.test',
+  submissionEmail: 'submit@ijtse-journal.test',
   phone: '+00 555 010 2026',
-  address: 'IJAIF House, Knowledge Avenue, Sector 7, Nova City'
+  address: 'IJTSE House, Knowledge Avenue, Sector 7, Nova City'
 };
 
 export const JOURNAL_HIGHLIGHTS = [

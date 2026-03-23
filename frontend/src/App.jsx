@@ -8,6 +8,9 @@ import EditorialBoardPage from './pages/EditorialBoardPage';
 import AuthorGuidelinesPage from './pages/AuthorGuidelinesPage';
 import PublicationEthicsPage from './pages/PublicationEthicsPage';
 import PeerReviewPolicyPage from './pages/PeerReviewPolicyPage';
+import PoliciesPage from './pages/PoliciesPage';
+import LicensingPage from './pages/LicensingPage';
+import CopyrightFormPage from './pages/CopyrightFormPage';
 import CurrentIssuePage from './pages/CurrentIssuePage';
 import ArchivesPage from './pages/ArchivesPage';
 import ContactPage from './pages/ContactPage';
@@ -26,10 +29,14 @@ const App = () => (
       <Route path="/author-guidelines" element={<AuthorGuidelinesPage />} />
       <Route path="/publication-ethics" element={<PublicationEthicsPage />} />
       <Route path="/peer-review-policy" element={<PeerReviewPolicyPage />} />
+      <Route path="/policies" element={<PoliciesPage />} />
+      <Route path="/licensing" element={<LicensingPage />} />
+      <Route path="/copyright-form" element={<CopyrightFormPage />} />
       <Route path="/current-issue" element={<CurrentIssuePage />} />
       <Route path="/archives" element={<ArchivesPage />} />
       <Route path="/contact" element={<ContactPage />} />
       <Route path="/submit-manuscript" element={<SubmitManuscriptPage />} />
+      <Route path="/submit-paper" element={<SubmitManuscriptPage />} />
       <Route path="/admin/login" element={<AdminLoginPage />} />
       <Route
         path="/admin/dashboard"

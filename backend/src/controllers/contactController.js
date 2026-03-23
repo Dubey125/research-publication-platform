@@ -1,12 +1,12 @@
-import sendEmail from '../utils/sendEmail.js';
+import { sendMail } from '../services/mailService.js';
 
 export const sendContactMessage = async (req, res, next) => {
   try {
     const { name, email, message } = req.body;
 
-    await sendEmail({
+    await sendMail({
       to: process.env.ADMIN_NOTIFY_EMAIL,
-      subject: `IJAIF Contact Message from ${name}`,
+      subject: `International Journal of Transdisciplinary Science and Engineering Contact Message from ${name}`,
       text: `Name: ${name}\nEmail: ${email}\n\n${message}`
     });
 
