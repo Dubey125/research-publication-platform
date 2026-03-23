@@ -40,7 +40,7 @@ export const createSubmission = async (req, res, next) => {
       declarationAccepted: req.body.declarationAccepted === true || req.body.declarationAccepted === 'true'
     });
 
-    // 1. Send email to ADMIN (done in background)
+    // 1. Send email to ADMIN
     const adminSubject = "New Paper Submission Received";
     const adminMessage = `
       <p>A new paper has been submitted to the journal.</p>
@@ -49,9 +49,9 @@ export const createSubmission = async (req, res, next) => {
       <p><strong>Author Email:</strong> <a href="mailto:${submission.email}">${submission.email}</a></p>
       <p>Please log in to the admin panel to review the submission.</p>
     `;
-    sendEmail(process.env.ADMIN_NOTIFY_EMAIL, adminSubject, getEmailTemplate(adminSubject, adminMessage));
+    const adminMailPromise = sendEmail(process.env.ADMIN_NOTIFY_EMAIL, adminSubject, getEmailTemplate(adminSubject, adminMessage));
 
-    // 2. Send email to AUTHOR (done in background)
+    // 2. Send email to AUTHOR
     const authorSubject = "Paper Submission Received - International Journal of Transdisciplinary Science and Engineering";
     const authorMessage = `
       <p>Dear ${submission.authorName},</p>
@@ -59,7 +59,11 @@ export const createSubmission = async (req, res, next) => {
       <p><strong>Paper Title:</strong> ${submission.paperTitle}</p>
       <p>Your paper is currently under initial review. We will notify you once the status changes or if we require any further information.</p>
     `;
-    sendEmail(submission.email, authorSubject, getEmailTemplate("Submission Received", authorMessage));
+    const authorMailPromise = sendEmail(submission.email, authorSubject, getEmailTemplate("Submission Received", authorMessage));
+
+    // Await both using Promise.allSettled so Render doesn't kill the background process, 
+    // but if one fails it doesn't crash the other.
+    await Promise.allSettled([adminMailPromise, authorMailPromise]);
 
     return res.status(201).json({ success: true, submission, message: 'Submission received successfully' });
   } catch (error) {
