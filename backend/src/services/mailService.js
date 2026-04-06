@@ -204,7 +204,7 @@ export const sendEmail = async (to, subject, htmlContent) => {
       }
 
       await resend.emails.send({
-        from: 'IJTSE <send@shashwatshukla.dev>',
+        from: 'IJTSE <no-reply@shashwatshukla.dev>',
         to,
         subject,
         html: htmlContent,
