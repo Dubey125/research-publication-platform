@@ -52,4 +52,5 @@ npm run build
 
 ### Important
 
-Enable CORS in backend `.env` with your deployed frontend URL in `CLIENT_URL`.
+Enable CORS in backend environment with your deployed frontend URL in `CORS_ORIGIN` (or `CLIENT_URL`).
+If Gmail still fails from cloud infrastructure, set SMTP overrides in backend env: `EMAIL_HOST`, `EMAIL_PORT`, `EMAIL_SECURE`.

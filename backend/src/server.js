@@ -1,6 +1,7 @@
 import 'dotenv/config';
 import app from './app.js';
 import connectDB from './config/db.js';
+import { verifyMailTransport } from './services/mailService.js';
 
 const PORT = process.env.PORT || 5000;
 const isProduction = process.env.NODE_ENV === 'production';
@@ -14,6 +15,7 @@ const listenOnPort = (port) =>
 const startServer = async () => {
   try {
     await connectDB();
+    await verifyMailTransport();
 
     let startPort = Number(PORT);
     let attempts = 0;
