@@ -19,15 +19,15 @@ const Navbar = () => {
     <header className="glass-nav sticky top-0 z-50">
       <div className="container-width flex items-center justify-between gap-4 py-3">
         {/* Logo */}
-        <Link to="/" className="group flex min-w-0 items-center gap-2 shrink-0">
+        <Link to="/" className="group flex min-w-0 items-center gap-2">
           <img
             src="/logo.png"
             alt="IJTSE Logo"
-            className="h-10 w-10 object-contain drop-shadow-sm dark:bg-white/90 dark:p-1 dark:rounded-lg"
+            className="h-9 w-9 md:h-10 md:w-10 shrink-0 object-contain drop-shadow-sm dark:bg-white/90 dark:p-1 dark:rounded-lg"
           />
           <span className="min-w-0">
             <span className="block text-[9px] font-semibold uppercase tracking-[0.2em] text-indigo-700 dark:text-indigo-400">Academic Journal</span>
-            <span className="block text-[13px] sm:text-sm font-bold leading-tight text-slate-900 dark:text-slate-100 line-clamp-2 md:line-clamp-1">
+            <span className="block text-xs sm:text-sm font-bold leading-tight text-slate-900 dark:text-slate-100 line-clamp-1">
               International Journal of Transdisciplinary Science and Engineering
             </span>
           </span>
@@ -75,7 +75,7 @@ const Navbar = () => {
         {/* Mobile menu toggle */}
         <button
           type="button"
-          className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-slate-200 bg-white dark:border-slate-700 dark:bg-slate-800 text-slate-600 dark:text-slate-300 transition lg:hidden"
+          className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-slate-200 bg-white dark:border-slate-700 dark:bg-slate-800 text-slate-600 dark:text-slate-300 transition lg:hidden"
           onClick={() => setMobileOpen((v) => !v)}
           aria-label="Toggle menu"
         >

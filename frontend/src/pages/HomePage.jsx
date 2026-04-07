@@ -162,15 +162,15 @@ const HomePage = () => {
         <div className="grid gap-10 lg:grid-cols-3">
           {/* About Journal (1/3) */}
           <motion.div {...fadeInUp} className="lg:col-span-1">
-            <div className="overflow-hidden rounded-3xl border border-slate-100 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-card dark:shadow-none">
+            <div className="overflow-hidden rounded-3xl border border-slate-100 dark:border-slate-700 bg-white dark:bg-slate-800/50 shadow-card dark:shadow-2xl">
               <img
                 src="https://images.unsplash.com/photo-1481627834876-b7833e8f5570?w=600&q=80"
                 alt="Library representing academic research"
-                className="h-48 w-full object-cover dark:opacity-80"
+                className="h-48 w-full object-cover dark:opacity-75 dark:mix-blend-luminosity"
               />
               <div className="p-6">
                 <h2 className="font-display text-2xl font-bold text-slate-900 dark:text-white">About The Journal</h2>
-                <p className="mt-3 text-sm leading-7 text-slate-600 dark:text-slate-400">
+                <p className="mt-3 text-sm leading-7 text-slate-600 dark:text-slate-300">
                   International Journal of Transdisciplinary Science and Engineering is a peer-reviewed,
                   open-access international journal dedicated to publishing high-quality research across
                   connected disciplines. We bridge science and engineering through rigorous double-blind
@@ -179,9 +179,9 @@ const HomePage = () => {
                 <div className="mt-5 space-y-3">
                   {JOURNAL_HIGHLIGHTS.map((item) => (
                     <div key={item.title} className="flex items-start gap-3">
-                      <span className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-indigo-500" />
+                      <span className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-indigo-500 dark:bg-indigo-400 shadow-[0_0_8px_rgba(99,102,241,0.6)] dark:shadow-[0_0_8px_rgba(129,140,248,0.8)]" />
                       <div>
-                        <p className="text-sm font-semibold text-slate-800 dark:text-slate-200">{item.title}</p>
+                        <p className="text-sm font-semibold text-slate-800 dark:text-slate-100">{item.title}</p>
                         <p className="text-xs leading-5 text-slate-500 dark:text-slate-400">{item.description}</p>
                       </div>
                     </div>
@@ -189,7 +189,7 @@ const HomePage = () => {
                 </div>
                 <Link
                   to="/policies"
-                  className="mt-5 inline-flex items-center gap-1.5 text-sm font-semibold text-indigo-600 dark:text-indigo-400 hover:text-indigo-800 dark:hover:text-indigo-300"
+                  className="mt-5 inline-flex items-center gap-1.5 text-sm font-semibold text-indigo-600 dark:text-indigo-400 hover:text-indigo-800 dark:hover:text-indigo-300 transition-colors"
                 >
                   Explore policies <ArrowRight size={14} />
                 </Link>
@@ -208,7 +208,7 @@ const HomePage = () => {
               </h2>
               <Link
                 to="/archives"
-                className="inline-flex items-center gap-1.5 rounded-full border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 px-4 py-1.5 text-xs font-semibold text-slate-600 dark:text-slate-400 transition hover:border-indigo-300 hover:text-indigo-600 dark:hover:border-indigo-600 dark:hover:text-indigo-300"
+                className="inline-flex items-center gap-1.5 rounded-full border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-800 px-4 py-1.5 text-xs font-semibold text-slate-600 dark:text-slate-300 transition hover:border-indigo-300 hover:text-indigo-600 dark:hover:border-indigo-500 dark:hover:bg-slate-700 dark:hover:text-indigo-300"
               >
                 Browse all <ArrowRight size={13} />
               </Link>
