@@ -9,8 +9,8 @@ export const ThemeProvider = ({ children }) => {
     if (stored) {
       return stored === 'dark';
     }
-    // Fall back to system preference
-    return window.matchMedia('(prefers-color-scheme: dark)').matches;
+    // Fall back to light mode by default for all devices
+    return false;
   });
 
   useEffect(() => {
