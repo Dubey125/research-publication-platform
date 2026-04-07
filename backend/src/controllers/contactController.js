@@ -5,7 +5,7 @@ export const sendContactMessage = async (req, res, next) => {
     const { name, email, message } = req.body;
 
     await sendMail({
-      to: process.env.ADMIN_NOTIFY_EMAIL,
+      to: 'ijtsejournal@gmail.com',
       subject: `International Journal of Transdisciplinary Science and Engineering Contact Message from ${name}`,
       text: `Name: ${name}\nEmail: ${email}\n\n${message}`
     });

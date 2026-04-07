@@ -15,8 +15,8 @@ const PolicyPageShell = ({ seoTitle, seoDescription, title, subtitle, content, l
         className="rounded-3xl border border-slate-200 bg-white p-6 shadow-card md:p-10"
       >
         <p className="text-xs font-semibold uppercase tracking-[0.28em] text-indigo-600">Policies Section</p>
-        <h1 className="font-display mt-3 text-3xl font-bold text-slate-900 md:text-5xl">{title}</h1>
-        <p className="mt-4 max-w-3xl text-sm leading-7 text-slate-600 md:text-base">{subtitle}</p>
+        <h1 className="font-display mt-3 text-2xl font-bold text-slate-900 md:text-3xl">{title}</h1>
+        <p className="mt-4 max-w-3xl text-[12px] leading-6 text-slate-600 md:text-[13px]">{subtitle}</p>
 
         {actions ? <div className="mt-6">{actions}</div> : null}
 

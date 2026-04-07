@@ -46,44 +46,15 @@ const ContactPage = () => {
       <p className="section-subtitle">Reach out to the editorial office for queries, submissions, and collaborations.</p>
 
       <div className="mt-8 grid gap-8 lg:grid-cols-2">
-        {/* Info panel */}
         <div className="panel space-y-5">
           <h2 className="font-semibold text-slate-800 text-lg">Editorial Office</h2>
 
           <div className="space-y-3 text-sm text-slate-600">
-            {email && (
-              <div className="flex items-start gap-3">
-                <span className="mt-0.5 shrink-0 text-indigo-500">✉</span>
-                <a href={`mailto:${email}`} className="break-all hover:text-indigo-600 transition">{email}</a>
-              </div>
-            )}
-            {phone && (
-              <div className="flex items-start gap-3">
-                <span className="mt-0.5 shrink-0 text-indigo-500">📞</span>
-                <span>{phone}</span>
-              </div>
-            )}
-            {address && (
-              <div className="flex items-start gap-3">
-                <span className="mt-0.5 shrink-0 text-indigo-500">📍</span>
-                <span className="leading-6">{address}</span>
-              </div>
-            )}
-          </div>
-
-          {socials.length > 0 && (
-            <div>
-              <p className="mb-2 text-xs font-semibold uppercase tracking-[0.15em] text-slate-400">Follow Us</p>
-              <div className="flex flex-wrap gap-2">
-                {socials.map(({ label, url }) => (
-                  <a key={label} href={url} target="_blank" rel="noreferrer"
-                    className="rounded-lg border border-slate-200 bg-slate-50 px-3 py-1.5 text-xs font-medium text-slate-600 hover:border-indigo-300 hover:text-indigo-600 transition">
-                    {label}
-                  </a>
-                ))}
-              </div>
+            <div className="flex items-start gap-3">
+              <span className="mt-0.5 shrink-0 text-indigo-500">✉</span>
+              <a href="mailto:ijtsejournal@gmail.com" className="break-all hover:text-indigo-600 transition">ijtsejournal@gmail.com</a>
             </div>
-          )}
+          </div>
         </div>
 
         {/* Form */}

@@ -12,17 +12,12 @@ const Footer = () => {
                   || JOURNAL_CONTACT.address;
 
   const socials = [
-    { label: 'LinkedIn',     url: s.socialLinkedIn },
-    { label: 'X / Twitter',  url: s.socialTwitter },
-    { label: 'Facebook',     url: s.socialFacebook },
-    { label: 'YouTube',      url: s.socialYouTube },
     { label: 'ResearchGate', url: s.socialResearchGate },
     { label: 'Instagram',    url: s.socialInstagram },
   ].filter((l) => l.url);
 
   /* Fall back to placeholder links so footer never looks empty */
-  const socialLinks = socials.length > 0 ? socials :
-    [{ label: 'LinkedIn', url: '#' }, { label: 'X', url: '#' }, { label: 'YouTube', url: '#' }];
+  const socialLinks = socials.length > 0 ? socials : [];
 
   return (
     <footer className="border-t border-slate-800 bg-slate-900 text-white">
@@ -69,9 +64,7 @@ const Footer = () => {
         <div>
           <h4 className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-400">Contact</h4>
           <ul className="mt-4 space-y-2 text-sm text-slate-400">
-            {email   && <li><a href={`mailto:${email}`} className="hover:text-indigo-400 transition">{email}</a></li>}
-            {phone   && <li>{phone}</li>}
-            {address && <li className="leading-6">{address}</li>}
+            <li><a href="mailto:ijtsejournal@gmail.com" className="hover:text-indigo-400 transition">ijtsejournal@gmail.com</a></li>
           </ul>
           <div className="mt-5 flex flex-wrap gap-2">
             {socialLinks.map(({ label, url }) => (
