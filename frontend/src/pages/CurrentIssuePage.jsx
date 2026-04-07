@@ -45,8 +45,8 @@ const CurrentIssuePage = () => {
             <p className="inline-flex rounded-full bg-primary-50 px-3 py-1 text-xs font-semibold uppercase tracking-[0.14em] text-primary-700">
               {paper.category}
             </p>
-            <h2 className="text-xl font-semibold text-slate-900">{paper.title}</h2>
-            <p className="mt-1 text-sm text-slate-600">{paper.authors.join(', ')}</p>
+            <h2 className="text-xl font-semibold text-slate-900 dark:text-white">{paper.title}</h2>
+            <p className="mt-1 text-sm text-slate-600 dark:text-slate-400">{paper.authors.join(', ')}</p>
             <p className="mt-3 text-sm leading-7 text-slate-700">{paper.abstract}</p>
             <a href={`${import.meta.env.VITE_FILE_BASE_URL || 'http://localhost:5000'}${paper.pdfUrl}`} className="mt-4 inline-flex rounded-md bg-primary-50 px-3 py-2 text-sm font-semibold text-primary-800 hover:bg-primary-100" target="_blank" rel="noreferrer">
               Download PDF

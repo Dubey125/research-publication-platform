@@ -40,7 +40,7 @@ const ArchivesPage = () => {
         <p className="section-subtitle">Search and filter previous volumes, issues, and published manuscripts.</p>
       </div>
 
-      <div className="mt-6 grid gap-4 rounded-2xl border border-primary-100 bg-white p-4 shadow-card md:grid-cols-4">
+      <div className="mt-6 grid gap-4 rounded-2xl border border-primary-100 bg-white dark:bg-slate-900 p-4 shadow-card md:grid-cols-4">
         <select className="rounded-lg border border-slate-300 px-3 py-2" value={query.year} onChange={(e) => updateQuery('year', e.target.value)}>
           <option value="">All Years</option>
           {filters.years.map((year) => <option key={year} value={year}>{year}</option>)}
@@ -61,8 +61,8 @@ const ArchivesPage = () => {
           {papers.map((paper) => (
             <article className="card transition duration-300 hover:-translate-y-1 hover:border-primary-200" key={paper._id}>
               <p className="inline-flex rounded-full bg-primary-50 px-3 py-1 text-xs font-semibold uppercase tracking-[0.14em] text-primary-700">Archive Record</p>
-              <h2 className="mt-3 text-xl font-semibold text-slate-900">{paper.title}</h2>
-              <p className="mt-1 text-sm text-slate-600">Vol. {paper.issue?.volume} | Issue {paper.issue?.issueNumber} | {paper.issue?.year}</p>
+              <h2 className="mt-3 text-xl font-semibold text-slate-900 dark:text-white">{paper.title}</h2>
+              <p className="mt-1 text-sm text-slate-600 dark:text-slate-400">Vol. {paper.issue?.volume} | Issue {paper.issue?.issueNumber} | {paper.issue?.year}</p>
               <p className="mt-3 text-sm leading-7 text-slate-700 line-clamp-3">{paper.abstract}</p>
               <a href={`${import.meta.env.VITE_FILE_BASE_URL || 'http://localhost:5000'}${paper.pdfUrl}`} className="mt-4 inline-flex rounded-md bg-primary-50 px-3 py-2 text-sm font-semibold text-primary-800 hover:bg-primary-100" target="_blank" rel="noreferrer">Download PDF</a>
             </article>
@@ -82,7 +82,7 @@ const ArchivesPage = () => {
         >
           Previous
         </button>
-        <span className="text-sm text-slate-600">Page {pagination.page} of {pagination.totalPages || 1}</span>
+        <span className="text-sm text-slate-600 dark:text-slate-400">Page {pagination.page} of {pagination.totalPages || 1}</span>
         <button
           className="btn-secondary disabled:cursor-not-allowed disabled:opacity-50"
           disabled={pagination.page >= (pagination.totalPages || 1)}

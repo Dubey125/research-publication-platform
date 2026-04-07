@@ -42,16 +42,16 @@ const PolicyContentView = ({ body }) => {
         item.type === 'heading' ? (
           <h2
             key={`h-${index}`}
-            className="font-display mt-5 text-[15px] font-semibold text-slate-900 border-b border-slate-200 pb-1.5"
+            className="font-display mt-5 text-[15px] font-semibold text-slate-900 dark:text-slate-100 border-b border-slate-200 dark:border-slate-800 pb-1.5"
           >
             {item.content}
           </h2>
         ) : item.type === 'bullets' ? (
-          <ul key={`ul-${index}`} className="ml-4 list-disc space-y-1.5 marker:text-indigo-400">
+          <ul key={`ul-${index}`} className="ml-4 list-disc space-y-1.5 marker:text-indigo-400 dark:marker:text-indigo-500">
             {item.items.map((li, li_i) => (
               <li
                 key={`li-${index}-${li_i}`}
-                className="text-[12px] leading-[1.7] text-slate-700 pl-1"
+                className="text-[12px] leading-[1.7] text-slate-700 dark:text-slate-300 pl-1"
               >
                 {li}
               </li>
@@ -60,7 +60,7 @@ const PolicyContentView = ({ body }) => {
         ) : (
           <p
             key={`p-${index}`}
-            className="text-[12px] leading-[1.7] text-slate-700"
+            className="text-[12px] leading-[1.7] text-slate-700 dark:text-slate-300"
           >
             {item.content}
           </p>

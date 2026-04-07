@@ -4,7 +4,7 @@ import api from '../utils/api';
 import { JOURNAL_CONTACT } from '../utils/constants';
 import { useSiteSettings } from '../context/SiteSettingsContext';
 
-const inp = 'w-full rounded-lg border border-slate-300 bg-white px-3 py-2.5 text-sm focus:border-indigo-400 focus:outline-none focus:ring-2 focus:ring-indigo-100';
+const inp = 'w-full rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900/50 px-3 py-2.5 text-sm focus:border-indigo-400 dark:focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-100 dark:focus:ring-indigo-900/40 text-slate-900 dark:text-slate-200 placeholder-slate-400 dark:placeholder-slate-500 transition-colors';
 
 const ContactPage = () => {
   const raw  = useSiteSettings();
@@ -47,26 +47,28 @@ const ContactPage = () => {
 
       <div className="mt-8 grid gap-8 lg:grid-cols-2">
         <div className="panel space-y-5">
-          <h2 className="font-semibold text-slate-800 text-lg">Editorial Office</h2>
+          <h2 className="font-semibold text-slate-800 dark:text-slate-200 text-lg">Editorial Office</h2>
 
-          <div className="space-y-3 text-sm text-slate-600">
+          <div className="space-y-3 text-sm text-slate-600 dark:text-slate-400">
             <div className="flex items-start gap-3">
               <span className="mt-0.5 shrink-0 text-indigo-500">✉</span>
-              <a href="mailto:ijtsejournal@gmail.com" className="break-all hover:text-indigo-600 transition">ijtsejournal@gmail.com</a>
+              <a href="mailto:ijtsejournal@gmail.com" className="break-all hover:text-indigo-600 dark:hover:text-indigo-400 transition">ijtsejournal@gmail.com</a>
             </div>
           </div>
         </div>
 
         {/* Form */}
         <form className="panel space-y-4" onSubmit={onSubmit}>
-          <h2 className="font-semibold text-slate-800 text-lg">Send a Message</h2>
+          <h2 className="font-semibold text-slate-800 dark:text-slate-200 text-lg">Send a Message</h2>
           <input className={inp} placeholder="Your name" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} required />
           <input className={inp} type="email" placeholder="Your email" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} required />
           <textarea className={inp} rows={5} placeholder="Your message" value={form.message} onChange={(e) => setForm({ ...form, message: e.target.value })} required />
           <input className="hidden" tabIndex={-1} autoComplete="off" value={form.honeypot} onChange={(e) => setForm({ ...form, honeypot: e.target.value })} />
           {status.text && (
             <p className={`rounded-lg px-3 py-2 text-sm font-medium ${
-              status.type === 'success' ? 'bg-green-50 text-green-700' : 'bg-red-50 text-red-700'
+              status.type === 'success' 
+                ? 'bg-green-50 dark:bg-green-900/30 text-green-700 dark:text-green-400' 
+                : 'bg-red-50 dark:bg-red-900/30 text-red-700 dark:text-red-400'
             }`}>{status.text}</p>
           )}
           <button className="btn-primary" type="submit">Send Message</button>

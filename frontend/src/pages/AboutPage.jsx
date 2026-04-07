@@ -35,7 +35,7 @@ const renderTextList = (text = '') => {
     .filter(Boolean);
   
   if (items.length <= 1) {
-    return <p className="mt-4 text-[12px] leading-6 text-slate-600">{text}</p>;
+    return <p className="mt-4 text-[12px] leading-6 text-slate-600 dark:text-slate-400">{text}</p>;
   }
 
   return (
@@ -56,7 +56,7 @@ const AboutPage = () => {
       <SEO title="About | International Journal of Transdisciplinary Science and Engineering" description="About the International Journal of Transdisciplinary Science and Engineering" />
       <div className="panel">
         <h1 className="section-title">{s.aboutTitle}</h1>
-        <p className="section-subtitle mt-3 text-[12px] text-slate-600 leading-relaxed md:text-[13px]">{s.aboutText}</p>
+        <p className="section-subtitle mt-3 text-[12px] text-slate-600 dark:text-slate-400 leading-relaxed md:text-[13px]">{s.aboutText}</p>
 
         <div className="mt-8 grid gap-6 md:grid-cols-2">
           <article className="rounded-2xl border border-primary-100 bg-gradient-to-br from-white to-slate-50 p-6 md:p-8 shadow-sm">
@@ -70,7 +70,7 @@ const AboutPage = () => {
         </div>
 
         {(s.journalISSN || s.journalDOI || s.publisherName) && (
-          <div className="mt-10 flex flex-wrap gap-6 rounded-2xl border border-slate-200 bg-white px-6 py-4 text-xs text-slate-600 shadow-sm">
+          <div className="mt-10 flex flex-wrap gap-6 rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 px-6 py-4 text-xs text-slate-600 dark:text-slate-400 shadow-sm">
             {s.journalISSN    && <span className="flex items-center gap-2"><div className="h-1.5 w-1.5 rounded-full bg-indigo-500"></div><span className="font-semibold text-slate-800">ISSN:</span> {s.journalISSN}</span>}
             {s.journalDOI     && <span className="flex items-center gap-2"><div className="h-1.5 w-1.5 rounded-full bg-blue-500"></div><span className="font-semibold text-slate-800">DOI:</span> {s.journalDOI}</span>}
             {s.publisherName  && <span className="flex items-center gap-2"><div className="h-1.5 w-1.5 rounded-full bg-emerald-500"></div><span className="font-semibold text-slate-800">Publisher:</span> {s.publisherName}</span>}

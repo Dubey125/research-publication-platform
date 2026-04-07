@@ -31,7 +31,7 @@ const EditorialBoardPage = () => {
         if (!filtered.length) return null;
         return (
           <div key={role} className="mt-8">
-            <h2 className="text-xl font-semibold text-slate-900">{role}</h2>
+            <h2 className="text-xl font-semibold text-slate-900 dark:text-white">{role}</h2>
             <div className="mt-4 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
               {filtered.map((member) => (
                 <article className="card" key={member._id}>
@@ -42,7 +42,7 @@ const EditorialBoardPage = () => {
                   )}
                   <h3 className="mt-4 text-lg font-semibold">{member.name}</h3>
                   <p className="text-sm text-primary-700">{member.affiliation}</p>
-                  <p className="mt-2 text-sm text-slate-600">{member.bio || 'Editorial board member'}</p>
+                  <p className="mt-2 text-sm text-slate-600 dark:text-slate-400">{member.bio || 'Editorial board member'}</p>
                 </article>
               ))}
             </div>

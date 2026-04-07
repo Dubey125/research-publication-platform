@@ -12,11 +12,11 @@ const PolicyPageShell = ({ seoTitle, seoDescription, title, subtitle, content, l
         initial={{ opacity: 0, y: 18 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.45, ease: 'easeOut' }}
-        className="rounded-3xl border border-slate-200 bg-white p-6 shadow-card md:p-10"
+        className="rounded-3xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-6 shadow-card dark:shadow-none md:p-10"
       >
-        <p className="text-xs font-semibold uppercase tracking-[0.28em] text-indigo-600">Policies Section</p>
-        <h1 className="font-display mt-3 text-2xl font-bold text-slate-900 md:text-3xl">{title}</h1>
-        <p className="mt-4 max-w-3xl text-[12px] leading-6 text-slate-600 md:text-[13px]">{subtitle}</p>
+        <p className="text-xs font-semibold uppercase tracking-[0.28em] text-indigo-600 dark:text-indigo-400">Policies Section</p>
+        <h1 className="font-display mt-3 text-2xl font-bold text-slate-900 dark:text-white md:text-3xl">{title}</h1>
+        <p className="mt-4 max-w-3xl text-[12px] leading-6 text-slate-600 dark:text-slate-400 md:text-[13px]">{subtitle}</p>
 
         {actions ? <div className="mt-6">{actions}</div> : null}
 

@@ -12,14 +12,13 @@ import { useAuth } from '../../context/AuthContext';
 import { CATEGORIES } from '../../utils/constants';
 
 /* helpers */
-const FILE_BASE = import.meta.env.VITE_FILE_BASE_URL || 'http://localhost:5000';
 const STATUS_STYLES = {
-  Pending:       'bg-amber-100 text-amber-700',
-  'Under Review':'bg-blue-100 text-blue-700',
-  Accepted:      'bg-green-100 text-green-700',
-  Rejected:      'bg-red-100 text-red-700'
+  Pending:       'bg-amber-100 text-amber-700 dark:bg-amber-900/40 dark:text-amber-500',
+  'Under Review':'bg-blue-100 text-blue-700 dark:bg-blue-900/40 dark:text-blue-400',
+  Accepted:      'bg-green-100 text-green-700 dark:bg-green-900/40 dark:text-green-400',
+  Rejected:      'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400'
 };
-const inp = 'w-full rounded-lg border border-slate-300 bg-white px-3 py-2.5 text-sm focus:border-indigo-400 focus:outline-none focus:ring-2 focus:ring-indigo-100';
+const inp = 'w-full rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900/50 px-3 py-2.5 text-sm focus:border-indigo-400 dark:focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-100 dark:focus:ring-indigo-900/40 text-slate-900 dark:text-white dark:text-slate-200 placeholder-slate-400 dark:placeholder-slate-500';
 const navLinks = [
   { id: 'sec-stats',       label: 'Overview',        icon: LayoutDashboard },
   { id: 'sec-issues',      label: 'Issues',          icon: BookOpen },
@@ -52,13 +51,13 @@ const contentTypeOptions = [
 function Confirm({ message, onConfirm, onCancel }) {
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4">
-      <div className="w-full max-w-sm rounded-2xl border border-slate-200 bg-white p-6 shadow-2xl">
+      <div className="w-full max-w-sm rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-6 shadow-2xl">
         <div className="flex items-start gap-3">
           <AlertTriangle size={22} className="mt-0.5 shrink-0 text-red-500" />
           <p className="text-sm text-slate-700">{message}</p>
         </div>
         <div className="mt-5 flex justify-end gap-3">
-          <button onClick={onCancel} className="rounded-lg border border-slate-200 px-4 py-2 text-sm font-medium text-slate-600 hover:bg-slate-50">Cancel</button>
+          <button onClick={onCancel} className="rounded-lg border border-slate-200 px-4 py-2 text-sm font-medium text-slate-600 dark:text-slate-400 hover:bg-slate-50">Cancel</button>
           <button onClick={onConfirm} className="rounded-lg bg-red-600 px-4 py-2 text-sm font-semibold text-white hover:bg-red-700">Delete</button>
         </div>
       </div>
@@ -364,21 +363,21 @@ const AdminDashboardPage = () => {
       {confirm && <Confirm message={confirm.message} onConfirm={confirm.onConfirm} onCancel={() => setConfirm(null)} />}
       <Toast msg={toast} onClose={() => setToast({ type: '', text: '' })} />
 
-      <div className="container-width flex gap-8 py-8">
+      <div className="container-width flex gap-8 py-8 flex-col lg:flex-row">
 
         {/* Sidebar */}
-        <aside className="hidden w-56 shrink-0 lg:block">
-          <nav className="sticky top-24 space-y-1 rounded-2xl border border-slate-200 bg-white p-3 shadow-sm">
-            <p className="mb-2 px-3 text-[10px] font-bold uppercase tracking-[0.2em] text-slate-400">Dashboard</p>
+        <aside className="w-full shrink-0 lg:block lg:w-56">
+          <nav className="sticky top-24 space-y-1 rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-3 shadow-sm dark:shadow-none hidden lg:block overflow-y-auto">
+            <p className="mb-2 px-3 text-[10px] font-bold uppercase tracking-[0.2em] text-slate-400 dark:text-slate-500">Dashboard</p>
             {navLinks.map(({ id, label, icon: Icon }) => (
               <a key={id} href={`#${id}`}
-                className={`flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition ${activeSection === id ? 'bg-indigo-600 text-white shadow-md shadow-indigo-200' : 'text-slate-600 hover:bg-slate-100'}`}>
+                className={`flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition ${activeSection === id ? 'bg-indigo-600 text-white shadow-md shadow-indigo-200 dark:shadow-indigo-900/40' : 'text-slate-600 dark:text-slate-400 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800/50'}`}>
                 <Icon size={16} />{label}
               </a>
             ))}
-            <div className="mt-2 border-t border-slate-100 pt-2">
+            <div className="mt-2 border-t border-slate-100 dark:border-slate-800 pt-2">
               <button onClick={() => { logout(); navigate('/admin/login'); }}
-                className="flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium text-red-600 hover:bg-red-50 transition">
+                className="flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 transition">
                 <LogOut size={16} /> Logout
               </button>
             </div>
@@ -392,15 +391,15 @@ const AdminDashboardPage = () => {
           <div className="flex flex-wrap items-center justify-between gap-4">
             <div>
               <p className="text-xs font-bold uppercase tracking-[0.2em] text-indigo-600">Editorial Workspace</p>
-              <h1 className="mt-1 text-3xl font-bold text-slate-900">Admin Dashboard</h1>
+              <h1 className="mt-1 text-3xl font-bold text-slate-900 dark:text-white">Admin Dashboard</h1>
             </div>
-            <button onClick={loadAll} className="flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-2 text-sm font-medium text-slate-600 hover:bg-slate-50 transition">
+            <button onClick={loadAll} className="flex items-center gap-2 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 px-4 py-2 text-sm font-medium text-slate-600 dark:text-slate-400 hover:bg-slate-50 transition">
               <RefreshCw size={15} /> Refresh
             </button>
           </div>
 
           {/* Mobile nav pills */}
-          <div className="flex gap-2 overflow-x-auto rounded-xl border border-slate-200 bg-white p-2 lg:hidden">
+          <div className="flex gap-2 overflow-x-auto rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-2 lg:hidden">
             {navLinks.map(({ id, label }) => (
               <a key={id} href={`#${id}`} className={`whitespace-nowrap rounded-full px-3 py-1.5 text-xs font-semibold transition ${activeSection === id ? 'bg-indigo-600 text-white' : 'bg-slate-100 text-slate-700'}`}>{label}</a>
             ))}
@@ -422,7 +421,7 @@ const AdminDashboardPage = () => {
               ].map(({ label, value, text }) => (
                 <div key={label} className="rounded-2xl border border-slate-100 bg-white p-5 shadow-sm">
                   <p className={`text-xs font-bold uppercase tracking-[0.14em] ${text}`}>{label}</p>
-                  <p className="mt-3 text-3xl font-extrabold text-slate-900">{value ?? 0}</p>
+                  <p className="mt-3 text-3xl font-extrabold text-slate-900 dark:text-white">{value ?? 0}</p>
                 </div>
               ))}
             </div>
@@ -440,7 +439,7 @@ const AdminDashboardPage = () => {
                 </div>
                 <input className={inp} placeholder="Year e.g. 2026" type="number" value={issueForm.year} onChange={(e) => setIssueForm({ ...issueForm, year: e.target.value })} required />
                 <input className={inp} placeholder="Issue title (optional)" value={issueForm.title} onChange={(e) => setIssueForm({ ...issueForm, title: e.target.value })} />
-                <label className="flex cursor-pointer items-center gap-2 text-sm text-slate-600">
+                <label className="flex cursor-pointer items-center gap-2 text-sm text-slate-600 dark:text-slate-400">
                   <input type="checkbox" className="rounded" checked={issueForm.isCurrent} onChange={(e) => setIssueForm({ ...issueForm, isCurrent: e.target.checked })} />
                   Mark as Current Issue
                 </label>
@@ -457,7 +456,7 @@ const AdminDashboardPage = () => {
                   {issues.map((issue) => (
                     <div key={issue._id} className="flex flex-wrap items-center justify-between gap-2 rounded-xl border border-slate-100 bg-slate-50 px-4 py-3">
                       <div>
-                        <span className="text-sm font-semibold text-slate-900">Vol.{issue.volume} Issue {issue.issueNumber} � {issue.year}</span>
+                        <span className="text-sm font-semibold text-slate-900 dark:text-white">Vol.{issue.volume} Issue {issue.issueNumber} � {issue.year}</span>
                         {issue.title && <span className="ml-2 text-xs text-slate-500">{issue.title}</span>}
                         {issue.isCurrent && <span className="ml-2 inline-flex items-center gap-0.5 rounded-full bg-green-100 px-2 py-0.5 text-[10px] font-bold text-green-700"><Star size={10} />Current</span>}
                       </div>
@@ -508,11 +507,11 @@ const AdminDashboardPage = () => {
                   {papers.length === 0 && <p className="text-sm text-slate-400">No papers yet.</p>}
                   {papers.map((p) => (
                     <div key={p._id} className="rounded-xl border border-slate-100 bg-slate-50 px-4 py-3">
-                      <p className="line-clamp-1 text-sm font-semibold text-slate-900">{p.title}</p>
+                      <p className="line-clamp-1 text-sm font-semibold text-slate-900 dark:text-white">{p.title}</p>
                       <p className="mt-0.5 text-xs text-slate-500">{(p.authors || []).join(', ')}</p>
                       <div className="mt-2 flex flex-wrap items-center gap-2">
                         <span className="rounded-full bg-indigo-50 px-2 py-0.5 text-[10px] font-bold text-indigo-700">{p.category}</span>
-                        <a href={`${FILE_BASE}${p.pdfUrl}`} target="_blank" rel="noreferrer" className="flex items-center gap-1 rounded-lg border border-slate-200 bg-white px-2.5 py-1 text-xs font-medium text-slate-600 hover:text-indigo-600 transition"><Eye size={12} /> PDF</a>
+                        <a href={`${FILE_BASE}${p.pdfUrl}`} target="_blank" rel="noreferrer" className="flex items-center gap-1 rounded-lg border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 px-2.5 py-1 text-xs font-medium text-slate-600 dark:text-slate-400 hover:text-indigo-600 transition"><Eye size={12} /> PDF</a>
                         <button onClick={() => startEditPaper(p)} className="flex items-center gap-1 rounded-lg border border-blue-200 bg-blue-50 px-2.5 py-1 text-xs font-medium text-blue-600 hover:bg-blue-100 transition"><Edit2 size={12} /> Edit</button>
                         <button onClick={() => deletePaper(p._id)} className="flex items-center gap-1 rounded-lg border border-red-200 bg-red-50 px-2.5 py-1 text-xs font-medium text-red-600 hover:bg-red-100 transition"><Trash2 size={12} /> Delete</button>
                       </div>
@@ -559,7 +558,7 @@ const AdminDashboardPage = () => {
                         : <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-indigo-100 text-sm font-bold text-indigo-600">{m.name.charAt(0)}</div>
                       }
                       <div className="min-w-0 flex-1">
-                        <p className="truncate text-sm font-semibold text-slate-900">{m.name}</p>
+                        <p className="truncate text-sm font-semibold text-slate-900 dark:text-white">{m.name}</p>
                         <p className="text-xs text-slate-500">{m.role} � {m.affiliation}</p>
                       </div>
                       <div className="flex shrink-0 items-center gap-1.5">
@@ -578,7 +577,7 @@ const AdminDashboardPage = () => {
             <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
               <h2 className="section-title">Manuscript Submissions</h2>
               <div className="flex items-center gap-2">
-                <div className="flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-3 py-2">
+                <div className="flex items-center gap-2 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 px-3 py-2">
                   <Filter size={14} className="text-slate-400" />
                   <select className="bg-transparent text-sm font-medium text-slate-700 outline-none" value={subFilter} onChange={(e) => setSubFilter(e.target.value)}>
                     <option>All</option>
@@ -588,14 +587,14 @@ const AdminDashboardPage = () => {
                     <option>Rejected</option>
                   </select>
                 </div>
-                <button onClick={() => exportCSV(filteredSubs)} className="flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm font-medium text-slate-600 hover:bg-slate-50 transition">
+                <button onClick={() => exportCSV(filteredSubs)} className="flex items-center gap-2 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 px-3 py-2 text-sm font-medium text-slate-600 dark:text-slate-400 hover:bg-slate-50 transition">
                   <Download size={14} /> Export CSV
                 </button>
               </div>
             </div>
 
             {filteredSubs.length === 0 && (
-              <div className="rounded-2xl border border-dashed border-slate-200 bg-white py-12 text-center">
+              <div className="rounded-2xl border border-dashed border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 py-12 text-center">
                 <Inbox size={32} className="mx-auto mb-3 text-slate-300" />
                 <p className="text-sm text-slate-400">No submissions{subFilter !== 'All' ? ` with status "${subFilter}"` : ''} yet.</p>
               </div>
@@ -603,15 +602,15 @@ const AdminDashboardPage = () => {
 
             <div className="space-y-4">
               {filteredSubs.map((s) => (
-                <div key={s._id} className="rounded-2xl border border-slate-200 bg-white shadow-sm">
+                <div key={s._id} className="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-sm">
                   <div className="flex flex-wrap items-start justify-between gap-3 p-5">
                     <div className="min-w-0 flex-1">
-                      <p className="font-semibold leading-snug text-slate-900">{s.paperTitle}</p>
+                      <p className="font-semibold leading-snug text-slate-900 dark:text-white">{s.paperTitle}</p>
                       <p className="mt-1 text-sm text-slate-500">{s.authorName} � {s.email} � {s.affiliation}</p>
                       <p className="mt-1 text-xs text-slate-400">{new Date(s.createdAt).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })}</p>
                     </div>
                     <div className="flex shrink-0 items-center gap-2">
-                      <span className={`rounded-full px-3 py-1 text-xs font-bold ${STATUS_STYLES[s.status] || 'bg-slate-100 text-slate-600'}`}>{s.status}</span>
+                      <span className={`rounded-full px-3 py-1 text-xs font-bold ${STATUS_STYLES[s.status] || 'bg-slate-100 text-slate-600 dark:text-slate-400'}`}>{s.status}</span>
                       <button onClick={() => setExpandedSub(expandedSub === s._id ? '' : s._id)} className="rounded-xl border border-slate-200 p-2 hover:bg-slate-50 transition">
                         {expandedSub === s._id ? <ChevronUp size={15} /> : <ChevronDown size={15} />}
                       </button>
@@ -629,13 +628,13 @@ const AdminDashboardPage = () => {
                           <div>
                             <p className="text-xs font-bold uppercase tracking-wide text-slate-400">Keywords</p>
                             <div className="mt-1 flex flex-wrap gap-1">
-                              {(s.keywords || []).map((kw) => <span key={kw} className="rounded-full bg-slate-100 px-2 py-0.5 text-xs text-slate-600">{kw}</span>)}
+                              {(s.keywords || []).map((kw) => <span key={kw} className="rounded-full bg-slate-100 px-2 py-0.5 text-xs text-slate-600 dark:text-slate-400">{kw}</span>)}
                             </div>
                           </div>
                           {s.adminNotes && (
                             <div>
                               <p className="text-xs font-bold uppercase tracking-wide text-slate-400">Previous Notes</p>
-                              <p className="mt-1 text-sm italic text-slate-600">{s.adminNotes}</p>
+                              <p className="mt-1 text-sm italic text-slate-600 dark:text-slate-400">{s.adminNotes}</p>
                             </div>
                           )}
                         </div>
@@ -742,7 +741,7 @@ const AdminDashboardPage = () => {
                   onChange={(e) => setAnnouncementForm({ ...announcementForm, message: e.target.value })}
                   required
                 />
-                <label className="flex cursor-pointer items-center gap-2 text-sm text-slate-600">
+                <label className="flex cursor-pointer items-center gap-2 text-sm text-slate-600 dark:text-slate-400">
                   <input
                     type="checkbox"
                     className="rounded"
@@ -762,8 +761,8 @@ const AdminDashboardPage = () => {
                     <div key={notice._id} className="rounded-xl border border-slate-100 bg-slate-50 px-4 py-3">
                       <div className="flex items-start justify-between gap-3">
                         <div>
-                          <p className="text-sm font-semibold text-slate-900">{notice.title}</p>
-                          <p className="mt-1 text-xs text-slate-600">{notice.message}</p>
+                          <p className="text-sm font-semibold text-slate-900 dark:text-white">{notice.title}</p>
+                          <p className="mt-1 text-xs text-slate-600 dark:text-slate-400">{notice.message}</p>
                         </div>
                         <div className="flex items-center gap-1.5">
                           <button
@@ -777,7 +776,7 @@ const AdminDashboardPage = () => {
                         </div>
                       </div>
                       <div className="mt-2 flex items-center gap-2">
-                        <span className={`rounded-full px-2 py-0.5 text-[10px] font-bold ${notice.isActive ? 'bg-green-100 text-green-700' : 'bg-slate-200 text-slate-600'}`}>
+                        <span className={`rounded-full px-2 py-0.5 text-[10px] font-bold ${notice.isActive ? 'bg-green-100 text-green-700' : 'bg-slate-200 text-slate-600 dark:text-slate-400'}`}>
                           {notice.isActive ? 'Active' : 'Inactive'}
                         </span>
                         <span className="text-[10px] text-slate-500">{new Date(notice.date || notice.createdAt).toLocaleDateString()}</span>
