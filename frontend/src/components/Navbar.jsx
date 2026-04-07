@@ -19,9 +19,11 @@ const Navbar = () => {
       <div className="container-width flex items-center justify-between gap-4 py-3">
         {/* Logo */}
         <Link to="/" className="group flex min-w-0 items-center gap-2 shrink-0">
-          <span className="inline-flex h-9 w-9 items-center justify-center rounded-full bg-amber-400 text-xs font-bold text-slate-900 shadow-md shadow-amber-200">
-            TS
-          </span>
+          <img
+            src="/logo.png"
+            alt="IJTSE Logo"
+            className="h-10 w-10 object-contain drop-shadow-sm"
+          />
           <span className="min-w-0">
             <span className="block text-[9px] font-semibold uppercase tracking-[0.2em] text-indigo-700">Academic Journal</span>
             <span className="block truncate text-sm font-bold leading-tight text-slate-900 md:max-w-[320px] lg:max-w-[460px] xl:max-w-none">

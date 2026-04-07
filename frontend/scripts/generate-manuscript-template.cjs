@@ -21,7 +21,12 @@ function hdr(d){
   d.font('Helvetica-Bold').fontSize(7).fillColor(C.wh).text('International Journal of Transdisciplinary Science and Engineering',L+5,T+3,{lineBreak:false});
   d.font('Helvetica').fontSize(5.5).text('ISSN: XXXX-XXXX | Volume XX, Issue XX, Month YYYY',L+5,T+13,{lineBreak:false});
   d.rect(L,T+22,CW,3).fill(C.gold);
-  d.font('Helvetica-Bold').fontSize(13).fillColor(C.navy).text('IJTSE',PW-R-48,T+4,{lineBreak:false});
+  try {
+    const logoPath = path.join(__dirname, '..', 'public', 'logo.png');
+    d.image(logoPath, PW-R-55, T-10, { width: 40 });
+  } catch (e) {
+    d.font('Helvetica-Bold').fontSize(13).fillColor(C.navy).text('IJTSE',PW-R-48,T+4,{lineBreak:false});
+  }
   d.restore();
 }
 
