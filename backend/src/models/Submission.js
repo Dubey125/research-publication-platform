@@ -2,6 +2,7 @@ import mongoose from 'mongoose';
 
 const submissionSchema = new mongoose.Schema(
   {
+    trackingId: { type: String, unique: true },
     authorName: { type: String, required: true, trim: true, maxlength: 120 },
     email: { type: String, required: true, lowercase: true, trim: true },
     affiliation: { type: String, required: true, trim: true, maxlength: 200 },

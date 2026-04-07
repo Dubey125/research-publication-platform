@@ -29,7 +29,16 @@ export const createSubmission = async (req, res, next) => {
       return res.status(400).json({ success: false, message: 'PDF manuscript is required' });
     }
 
+    const lastSub = await Submission.findOne().sort({ createdAt: -1 });
+    let idNum = 1;
+    if (lastSub && lastSub.trackingId) {
+      const match = lastSub.trackingId.match(/\d+/);
+      if (match) idNum = parseInt(match[0], 10) + 1;
+    }
+    const trackingId = `ID${idNum}`;
+
     const submission = await Submission.create({
+      trackingId,
       authorName: req.body.authorName,
       email: req.body.email,
       affiliation: req.body.affiliation,
@@ -44,6 +53,7 @@ export const createSubmission = async (req, res, next) => {
     const adminSubject = "New Paper Submission Received";
     const adminMessage = `
       <p>A new paper has been submitted to the journal.</p>
+      <p><strong>Tracking ID:</strong> ${trackingId}</p>
       <p><strong>Paper Title:</strong> ${submission.paperTitle}</p>
       <p><strong>Author Name:</strong> ${submission.authorName}</p>
       <p><strong>Author Email:</strong> <a href="mailto:${submission.email}">${submission.email}</a></p>
@@ -60,6 +70,10 @@ export const createSubmission = async (req, res, next) => {
       <p>Thank you for submitting your manuscript to the International Journal of Transdisciplinary Science and Engineering.</p>
       <p><strong>Paper Title:</strong> ${submission.paperTitle}</p>
       <p>Your paper is currently under initial review. We will notify you once the status changes or if we require any further information.</p>
+      <div style="background-color: #f8f9fa; padding: 10px 15px; border-left: 4px solid #4f46e5; margin-top: 20px;">
+        <p style="margin: 0;"><strong>Your Submission Tracking ID is: ${trackingId}</strong></p>
+        <p style="margin: 5px 0 0 0; font-size: 13px; color: #666;">Please use this ID in any future correspondence regarding this submission.</p>
+      </div>
     `;
     sendEmail(submission.email, authorSubject, getEmailTemplate("Submission Received", authorMessage))
       .catch(e => console.error("Author Email Background Error:", e));
@@ -115,13 +129,19 @@ export const updateSubmissionStatus = async (req, res, next) => {
       return res.status(404).json({ success: false, message: 'Submission not found' });
     }
 
+    const idStr = submission.trackingId ? ` (ID: ${submission.trackingId})` : '';
+    const adminNotesHtml = adminNotes 
+      ? `<div style="background-color: #fdf2f8; padding: 15px; border-left: 4px solid #db2777; margin-top: 20px; font-size: 14px;"><strong>Message from the Editorial Board:</strong><br/><br/>${adminNotes.replace(/\n/g, '<br/>')}</div>` 
+      : '';
+
     const statusMessages = {
       'Under Review': {
         subject: 'Your Paper is Under Review',
         title: 'Your Paper is Under Review',
         htmlMessage: `
           <p>Dear ${submission.authorName},</p>
-          <p>Your paper titled "${submission.paperTitle}" is currently under review.</p>
+          <p>Your paper titled "${submission.paperTitle}"${idStr} is currently under peer review.</p>
+          ${adminNotesHtml}
         `
       },
       Accepted: {
@@ -129,7 +149,8 @@ export const updateSubmissionStatus = async (req, res, next) => {
         title: 'Congratulations! Paper Accepted',
         htmlMessage: `
           <p>Dear ${submission.authorName},</p>
-          <p>Your paper "${submission.paperTitle}" has been accepted for publication.</p>
+          <p>We are delighted to inform you that your paper "${submission.paperTitle}"${idStr} has been accepted for publication.</p>
+          ${adminNotesHtml}
         `
       },
       Rejected: {
@@ -137,7 +158,8 @@ export const updateSubmissionStatus = async (req, res, next) => {
         title: 'Paper Submission Update',
         htmlMessage: `
           <p>Dear ${submission.authorName},</p>
-          <p>We regret to inform you that your paper "${submission.paperTitle}" was not accepted.</p>
+          <p>Thank you for submitting your work to us. We regret to inform you that, following editorial review, your paper "${submission.paperTitle}"${idStr} was not accepted for publication.</p>
+          ${adminNotesHtml}
         `
       }
     };
