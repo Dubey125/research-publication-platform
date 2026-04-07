@@ -23,11 +23,11 @@ const Navbar = () => {
           <img
             src="/logo.png"
             alt="IJTSE Logo"
-            className="h-10 w-10 object-contain drop-shadow-sm"
+            className="h-10 w-10 object-contain drop-shadow-sm dark:bg-white/90 dark:p-1 dark:rounded-lg"
           />
           <span className="min-w-0">
-            <span className="block text-[9px] font-semibold uppercase tracking-[0.2em] text-indigo-700">Academic Journal</span>
-            <span className="block truncate text-sm font-bold leading-tight text-slate-900 md:max-w-[320px] lg:max-w-[460px] xl:max-w-none">
+            <span className="block text-[9px] font-semibold uppercase tracking-[0.2em] text-indigo-700 dark:text-indigo-400">Academic Journal</span>
+            <span className="block text-[13px] sm:text-sm font-bold leading-tight text-slate-900 dark:text-slate-100 line-clamp-2 md:line-clamp-1">
               International Journal of Transdisciplinary Science and Engineering
             </span>
           </span>

@@ -19,37 +19,37 @@ const snapshotItems = [
     label: 'Review Model',
     value: 'Double-blind',
     icon: BookCheck,
-    cardBg: 'bg-indigo-50/50',
-    cardBorder: 'border-indigo-100',
-    iconBg: 'bg-indigo-100',
-    iconColor: 'text-indigo-600'
+    cardBg: 'bg-indigo-50/50 dark:bg-indigo-900/20',
+    cardBorder: 'border-indigo-100 dark:border-indigo-800/50',
+    iconBg: 'bg-indigo-100 dark:bg-indigo-900/60',
+    iconColor: 'text-indigo-600 dark:text-indigo-300'
   },
   {
     label: 'Open Access',
     value: '100% Online',
     icon: Globe2,
-    cardBg: 'bg-emerald-50/50',
-    cardBorder: 'border-emerald-100',
-    iconBg: 'bg-emerald-100',
-    iconColor: 'text-emerald-600'
+    cardBg: 'bg-emerald-50/50 dark:bg-emerald-900/20',
+    cardBorder: 'border-emerald-100 dark:border-emerald-800/50',
+    iconBg: 'bg-emerald-100 dark:bg-emerald-900/60',
+    iconColor: 'text-emerald-600 dark:text-emerald-300'
   },
   {
     label: 'Editorial Cycle',
     value: '2–3 Weeks',
     icon: Zap,
-    cardBg: 'bg-amber-50/50',
-    cardBorder: 'border-amber-100',
-    iconBg: 'bg-amber-100',
-    iconColor: 'text-amber-600'
+    cardBg: 'bg-amber-50/50 dark:bg-amber-900/20',
+    cardBorder: 'border-amber-100 dark:border-amber-800/50',
+    iconBg: 'bg-amber-100 dark:bg-amber-900/60',
+    iconColor: 'text-amber-600 dark:text-amber-300'
   },
   {
     label: 'Ethics Screen',
     value: '15% Limit',
     icon: Shield,
-    cardBg: 'bg-rose-50/50',
-    cardBorder: 'border-rose-100',
-    iconBg: 'bg-rose-100',
-    iconColor: 'text-rose-600'
+    cardBg: 'bg-rose-50/50 dark:bg-rose-900/20',
+    cardBorder: 'border-rose-100 dark:border-rose-800/50',
+    iconBg: 'bg-rose-100 dark:bg-rose-900/60',
+    iconColor: 'text-rose-600 dark:text-rose-300'
   }
 ];
 
@@ -104,10 +104,10 @@ const HomePage = () => {
         <div className="container-width grid items-center gap-12 lg:grid-cols-[1.25fr_0.75fr]">
           {/* Left: headline */}
           <motion.div {...fadeInUp}>
-            <span className="inline-flex rounded-full border border-indigo-200 dark:border-indigo-800 bg-indigo-50 dark:bg-indigo-900/40 px-4 py-1.5 text-xs font-semibold uppercase tracking-[0.22em] text-indigo-700 dark:text-indigo-300">
+            <span className="inline-flex rounded-full border border-indigo-200 dark:border-indigo-800 bg-indigo-50 dark:bg-indigo-900/40 px-4 py-1.5 text-[10px] md:text-xs font-semibold uppercase tracking-[0.22em] text-indigo-700 dark:text-indigo-300">
               Peer-Reviewed · Open Access
             </span>
-            <h1 className="font-display mt-6 max-w-3xl text-5xl font-extrabold leading-[1.1] text-slate-900 dark:text-white lg:text-7xl">
+            <h1 className="font-display mt-6 max-w-3xl text-4xl sm:text-5xl font-extrabold leading-[1.15] text-slate-900 dark:text-white lg:text-7xl break-words hyphens-auto">
               Publish Your{' '}
               <span className="text-indigo-600 dark:text-indigo-400">Transdisciplinary</span>{' '}
               Research
@@ -142,13 +142,13 @@ const HomePage = () => {
                 return (
                   <article
                     key={item.label}
-                    className={`group rounded-2xl border p-4 transition hover:-translate-y-0.5 hover:shadow-md ${item.cardBg} ${item.cardBorder} dark:bg-opacity-5 dark:border-opacity-20`}
+                    className={`group rounded-2xl border p-4 transition hover:-translate-y-0.5 hover:shadow-md ${item.cardBg} ${item.cardBorder}`}
                   >
-                    <div className={`inline-flex h-9 w-9 items-center justify-center rounded-xl ${item.iconBg} dark:bg-opacity-20 transition group-hover:scale-110`}>
+                    <div className={`inline-flex h-9 w-9 items-center justify-center rounded-xl ${item.iconBg} transition group-hover:scale-110`}>
                       <Icon size={18} className={item.iconColor} />
                     </div>
-                    <p className="mt-3 text-[10px] font-semibold uppercase tracking-[0.18em] text-slate-400 dark:text-slate-500">{item.label}</p>
-                    <p className="mt-0.5 text-base font-bold text-slate-900 dark:text-slate-200">{item.value}</p>
+                    <p className="mt-3 text-[10px] font-semibold uppercase tracking-[0.18em] text-slate-400 dark:text-slate-400">{item.label}</p>
+                    <p className="mt-0.5 text-base font-bold text-slate-900 dark:text-slate-100">{item.value}</p>
                   </article>
                 );
               })}
