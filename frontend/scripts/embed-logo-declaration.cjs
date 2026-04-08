@@ -25,7 +25,7 @@ const LOGO_IMG = path.join(PUBLIC_DIR, 'logo.png');
 
   const pdfDoc = await PDFDocument.load(pdfBytes);
   const logoImage = await pdfDoc.embedPng(logoBytes);
-  const logoDims = logoImage.scale(0.2); // scale logo to 20% of original size
+  const logoDims = logoImage.scale(0.1); // scale logo to 10% of original size for a smaller header logo
 
   const pages = pdfDoc.getPages();
   pages.forEach((page, idx) => {
