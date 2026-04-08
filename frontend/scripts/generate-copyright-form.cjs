@@ -40,11 +40,6 @@ function header(d) {
     .fontSize(12)
     .fillColor(C.white)
     .text('International Journal of Transdisciplinary Science and Engineering', MARGIN + 5, MARGIN - 15, { lineBreak: false });
-  // Logo (if exists)
-  const logoPath = path.join(__dirname, '..', 'public', 'logo.png');
-  if (fs.existsSync(logoPath)) {
-    d.image(logoPath, PAGE_WIDTH - MARGIN - 45, MARGIN - 18, { width: 40 });
-  }
   d.moveDown();
 }
 
