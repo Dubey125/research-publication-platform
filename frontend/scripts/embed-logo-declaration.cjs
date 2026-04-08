@@ -25,14 +25,14 @@ const LOGO_IMG = path.join(PUBLIC_DIR, 'logo.png');
 
   const pdfDoc = await PDFDocument.load(pdfBytes);
   const logoImage = await pdfDoc.embedPng(logoBytes);
-  const logoDims = logoImage.scale(0.1); // scale logo to 10% of original size for a smaller header logo
+  const logoDims = logoImage.scale(0.01); // scale logo to 1% of original size for a very tiny header logo
 
   const pages = pdfDoc.getPages();
   pages.forEach((page, idx) => {
     const { width, height } = page.getSize();
-    // Place logo at top‑right corner with some margin
-    const x = width - logoDims.width - 30; // 30pt margin from right
-    const y = height - logoDims.height - 30; // 30pt margin from top
+    // Place logo at top‑right corner with minimal margin
+    const x = width - logoDims.width - 5; // 5pt margin from right
+    const y = height - logoDims.height - 5; // 5pt margin from top
     page.drawImage(logoImage, {
       x,
       y,
