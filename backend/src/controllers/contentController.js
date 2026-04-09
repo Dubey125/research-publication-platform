@@ -187,3 +187,57 @@ export const upsertContentByType = async (req, res, next) => {
     return next(error);
   }
 };
+
+export const syncDefaultContent = async (req, res, next) => {
+  try {
+    const requestedTypes = Array.isArray(req.body?.types) ? req.body.types : [];
+    const overwrite = req.body?.overwrite === true;
+
+    const availableTypes = Object.keys(defaultContentByType);
+    const targetTypes = requestedTypes.length ? requestedTypes : availableTypes;
+
+    const invalidTypes = targetTypes.filter((type) => !defaultContentByType[type]);
+    if (invalidTypes.length) {
+      return res.status(400).json({
+        success: false,
+        message: `Invalid content type(s): ${invalidTypes.join(', ')}`
+      });
+    }
+
+    const results = [];
+
+    for (const type of targetTypes) {
+      const fallback = defaultContentByType[type];
+      const existing = await SiteContent.findOne({ type });
+
+      if (!existing) {
+        const content = await SiteContent.create({
+          type,
+          title: fallback.title,
+          body: fallback.body
+        });
+        results.push({ type, action: 'created', id: content._id });
+        continue;
+      }
+
+      if (!overwrite) {
+        results.push({ type, action: 'skipped-existing', id: existing._id });
+        continue;
+      }
+
+      existing.title = fallback.title;
+      existing.body = fallback.body;
+      await existing.save();
+      results.push({ type, action: 'updated', id: existing._id });
+    }
+
+    return res.json({
+      success: true,
+      message: 'Default content sync completed',
+      overwrite,
+      results
+    });
+  } catch (error) {
+    return next(error);
+  }
+};
