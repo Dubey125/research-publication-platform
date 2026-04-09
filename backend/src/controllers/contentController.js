@@ -1,6 +1,6 @@
 import SiteContent, { CONTENT_TYPES } from '../models/SiteContent.js';
 
-const defaultContentByType = {
+export const defaultContentByType = {
   policies: {
     title: 'Journal Policies',
     body: `## Editorial Policies
