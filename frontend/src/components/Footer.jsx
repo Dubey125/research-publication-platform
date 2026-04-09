@@ -18,6 +18,19 @@ const Footer = () => {
 
   /* Fall back to placeholder links so footer never looks empty */
   const socialLinks = socials.length > 0 ? socials : [];
+  const quickLinks = [
+    { to: '/about', label: 'About' },
+    { to: '/current-issue', label: 'Issues' },
+    { to: '/submit-paper', label: 'Submit Paper' },
+    { to: '/join-reviewer', label: 'Join Reviewer' },
+    { to: '/editorial-board', label: 'Editorial Board' },
+    { to: '/policies', label: 'Policies' },
+    { to: '/author-guidelines', label: 'Author Guidelines' },
+    { to: '/contact', label: 'Contact' }
+  ];
+  const mid = Math.ceil(quickLinks.length / 2);
+  const leftColumnLinks = quickLinks.slice(0, mid);
+  const rightColumnLinks = quickLinks.slice(mid);
 
   return (
     <footer className="border-t border-slate-800 bg-slate-900 text-white">
@@ -47,22 +60,22 @@ const Footer = () => {
         {/* Quick links */}
         <div>
           <h4 className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-400">Quick Links</h4>
-          <ul className="mt-4 space-y-2.5">
-            {[
-              { to: '/about', label: 'About' },
-              { to: '/current-issue', label: 'Issues' },
-              { to: '/submit-paper', label: 'Submit Paper' },
-              { to: '/join-reviewer', label: 'Join Reviewer' },
-              { to: '/editorial-board',label: 'Editorial Board' },
-              { to: '/policies', label: 'Policies' },
-              { to: '/author-guidelines', label: 'Author Guidelines' },
-              { to: '/contact',        label: 'Contact' }
-            ].map((link) => (
-              <li key={link.to}>
-                <Link to={link.to} className="text-sm text-slate-400 transition hover:text-indigo-400">{link.label}</Link>
-              </li>
-            ))}
-          </ul>
+          <div className="mt-4 grid grid-cols-2 gap-x-8 gap-y-2.5">
+            <ul className="space-y-2.5">
+              {leftColumnLinks.map((link) => (
+                <li key={link.to}>
+                  <Link to={link.to} className="text-sm text-slate-400 transition hover:text-indigo-400">{link.label}</Link>
+                </li>
+              ))}
+            </ul>
+            <ul className="space-y-2.5">
+              {rightColumnLinks.map((link) => (
+                <li key={link.to}>
+                  <Link to={link.to} className="text-sm text-slate-400 transition hover:text-indigo-400">{link.label}</Link>
+                </li>
+              ))}
+            </ul>
+          </div>
         </div>
 
         {/* Contact */}
