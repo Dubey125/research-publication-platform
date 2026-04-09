@@ -28,8 +28,10 @@ const Navbar = () => {
           />
           <span className="min-w-0">
             <span className="block text-[9px] font-semibold uppercase tracking-[0.2em] text-indigo-700 dark:text-indigo-400">Academic Journal</span>
-            <span className="block text-xs sm:text-sm font-bold leading-tight text-slate-900 dark:text-slate-100 line-clamp-1">
-              International Journal of Transdisciplinary Science and Engineering
+            <span className="block text-xs sm:text-sm font-bold leading-tight text-slate-900 dark:text-slate-100 whitespace-normal">
+              International Journal of Transdisciplinary
+              <br />
+              Science and Engineering
             </span>
           </span>
         </Link>
