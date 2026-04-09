@@ -11,6 +11,7 @@ Production-ready backend API for **International Journal of Advanced Interdiscip
 - Image upload support for editorial photos
 - Input validation with `express-validator`
 - Rate limiting and anti-spam honeypot fields
+- Google reCAPTCHA verification for manuscript submissions
 - Email notification to admin on new submission/contact message
 
 ## Setup
@@ -28,7 +29,8 @@ Production-ready backend API for **International Journal of Advanced Interdiscip
    ```powershell
    Copy-Item .env.example .env
    ```
-3. Update `.env` values (`MONGODB_URI`, `JWT_SECRET`, SMTP).
+3. Update `.env` values (`MONGODB_URI`, `JWT_SECRET`, SMTP, `GOOGLE_RECAPTCHA_SECRET_KEY`).
+   Optionally set `RECAPTCHA_EXPECTED_HOSTNAME` to lock verification to your domain.
 4. Seed admin:
    ```bash
    npm run seed:admin

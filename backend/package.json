@@ -36,6 +36,6 @@
     "resend": "^6.10.0"
   },
   "devDependencies": {
-    "nodemon": "^3.1.7"
+    "nodemon": "^3.1.14"
   }
 }

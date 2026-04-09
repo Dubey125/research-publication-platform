@@ -30,12 +30,35 @@ const fileFilter = (_req, file, cb) => {
   }
 };
 
-const maxFileSize = (Number(process.env.MAX_FILE_SIZE_MB) || 15) * 1024 * 1024;
+const maxPdfFileSize = (Number(process.env.MAX_FILE_SIZE_MB) || 15) * 1024 * 1024;
+const maxManuscriptFileSize = (Number(process.env.MAX_MANUSCRIPT_FILE_SIZE_MB) || 20) * 1024 * 1024;
 
 export const uploadPdf = multer({
   storage,
   fileFilter,
-  limits: { fileSize: maxFileSize }
+  limits: { fileSize: maxPdfFileSize }
+});
+
+const manuscriptFilter = (_req, file, cb) => {
+  const extension = path.extname(file.originalname || '').toLowerCase();
+  const allowedTypes = new Map([
+    ['application/pdf', '.pdf'],
+    ['application/msword', '.doc'],
+    ['application/vnd.openxmlformats-officedocument.wordprocessingml.document', '.docx']
+  ]);
+
+  const expectedExtension = allowedTypes.get(file.mimetype);
+  if (!expectedExtension || extension !== expectedExtension) {
+    cb(new Error('Only PDF, DOC, or DOCX files are allowed.'));
+  } else {
+    cb(null, true);
+  }
+};
+
+export const uploadManuscript = multer({
+  storage,
+  fileFilter: manuscriptFilter,
+  limits: { fileSize: maxManuscriptFileSize }
 });
 
 const imageFilter = (_req, file, cb) => {

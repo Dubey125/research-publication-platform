@@ -38,9 +38,12 @@ export const errorHandler = (err, _req, res, _next) => {
   // Multer errors
   if (err.code === 'LIMIT_FILE_SIZE') {
     statusCode = 400;
-    message = `File too large. Maximum size is ${process.env.MAX_FILE_SIZE_MB || 15} MB.`;
+    message = `File too large. Maximum size is ${process.env.MAX_MANUSCRIPT_FILE_SIZE_MB || 20} MB for manuscript uploads.`;
   }
   if (err.message === 'Only PDF files are allowed.') {
+    statusCode = 400;
+  }
+  if (err.message === 'Only PDF, DOC, or DOCX files are allowed.') {
     statusCode = 400;
   }
 

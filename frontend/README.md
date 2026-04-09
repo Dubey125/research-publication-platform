@@ -23,7 +23,9 @@ Frontend for **International Journal of Advanced Interdisciplinary Frontiers (IJ
    ```env
    VITE_API_URL=http://localhost:5000/api
    VITE_FILE_BASE_URL=http://localhost:5000
+   VITE_RECAPTCHA_SITE_KEY=your_google_recaptcha_site_key
    ```
+   `VITE_RECAPTCHA_SITE_KEY` is required for submission form robot verification.
 3. Start dev server:
    ```bash
    npm run dev
@@ -49,6 +51,7 @@ npm run build
 - Add environment variables:
   - `VITE_API_URL=https://<render-backend-url>/api`
   - `VITE_FILE_BASE_URL=https://<render-backend-url>`
+   - `VITE_RECAPTCHA_SITE_KEY=<google-recaptcha-site-key>`
 
 ### Important
 

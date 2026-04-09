@@ -6,7 +6,9 @@ export const submissionValidation = [
   body('affiliation').trim().notEmpty().withMessage('Affiliation is required'),
   body('paperTitle').trim().notEmpty().withMessage('Paper title is required'),
   body('abstract').trim().notEmpty().withMessage('Abstract is required').isLength({ max: 5000 }),
+  body('keywords').trim().notEmpty().withMessage('Keywords are required'),
   body('declarationAccepted').custom((value) => value === true || value === 'true').withMessage('Declaration must be accepted'),
+  body('recaptchaToken').trim().notEmpty().withMessage('Robot verification token is required'),
   body('honeypot').optional().custom((value) => !value).withMessage('Spam detected')
 ];
 

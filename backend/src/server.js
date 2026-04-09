@@ -6,6 +6,14 @@ import { verifyMailTransport } from './services/mailService.js';
 const PORT = process.env.PORT || 5000;
 const isProduction = process.env.NODE_ENV === 'production';
 
+const validateCriticalEnv = () => {
+  if (!isProduction) return;
+
+  if (!process.env.GOOGLE_RECAPTCHA_SECRET_KEY?.trim()) {
+    throw new Error('Missing GOOGLE_RECAPTCHA_SECRET_KEY in production. Refusing to start without bot protection.');
+  }
+};
+
 const listenOnPort = (port) =>
   new Promise((resolve, reject) => {
     const server = app.listen(port, () => resolve({ server, port }));
@@ -14,6 +22,7 @@ const listenOnPort = (port) =>
 
 const startServer = async () => {
   try {
+    validateCriticalEnv();
     await connectDB();
     await verifyMailTransport();
 

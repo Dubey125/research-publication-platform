@@ -1,5 +1,6 @@
 import Submission from '../models/Submission.js';
 import { sendEmail } from '../services/mailService.js';
+import { verifyRecaptchaToken } from '../services/recaptchaService.js';
 
 const parseKeywords = (value) => {
   if (!value) return [];
@@ -26,7 +27,28 @@ const getEmailTemplate = (title, message) => `
 export const createSubmission = async (req, res, next) => {
   try {
     if (!req.file) {
-      return res.status(400).json({ success: false, message: 'PDF manuscript is required' });
+      return res.status(400).json({ success: false, message: 'Manuscript file is required' });
+    }
+
+    const recaptchaToken = String(req.body.recaptchaToken || '').trim();
+    const recaptchaResult = await verifyRecaptchaToken({
+      token: recaptchaToken,
+      remoteIp: req.ip
+    });
+
+    const expectedHostname = (process.env.RECAPTCHA_EXPECTED_HOSTNAME || '').trim();
+
+    if (!recaptchaResult.success) {
+      return res.status(400).json({ success: false, message: 'Robot verification failed. Please try again.' });
+    }
+
+    if (expectedHostname && recaptchaResult.hostname && recaptchaResult.hostname !== expectedHostname) {
+      return res.status(400).json({ success: false, message: 'Robot verification failed for this domain.' });
+    }
+
+    const keywords = parseKeywords(req.body.keywords);
+    if (!keywords.length) {
+      return res.status(400).json({ success: false, message: 'At least one keyword is required' });
     }
 
     const lastSub = await Submission.findOne().sort({ createdAt: -1 });
@@ -44,7 +66,7 @@ export const createSubmission = async (req, res, next) => {
       affiliation: req.body.affiliation,
       paperTitle: req.body.paperTitle,
       abstract: req.body.abstract,
-      keywords: parseKeywords(req.body.keywords),
+      keywords,
       manuscriptUrl: `/uploads/${req.file.filename}`,
       declarationAccepted: req.body.declarationAccepted === true || req.body.declarationAccepted === 'true'
     });
