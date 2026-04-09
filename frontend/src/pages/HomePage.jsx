@@ -294,6 +294,12 @@ const HomePage = () => {
               >
                 Author Guidelines
               </Link>
+              <Link
+                to="/join-reviewer"
+                className="inline-flex items-center gap-2 rounded-xl border border-indigo-500/60 px-8 py-3.5 text-sm font-semibold text-indigo-300 transition hover:border-indigo-300 hover:text-white"
+              >
+                Join as Reviewer
+              </Link>
             </div>
           </motion.div>
         </div>

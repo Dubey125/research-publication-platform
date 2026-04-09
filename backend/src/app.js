@@ -21,6 +21,7 @@
   import settingsRoutes from './routes/settingsRoutes.js';
   import contentRoutes from './routes/contentRoutes.js';
   import announcementRoutes from './routes/announcementRoutes.js';
+  import reviewerRoutes from './routes/reviewerRoutes.js';
 
   const __filename = fileURLToPath(import.meta.url);
   const __dirname = path.dirname(__filename);
@@ -102,6 +103,7 @@
   app.use('/api/settings', settingsRoutes);
   app.use('/api/content', contentRoutes);
   app.use('/api/announcements', announcementRoutes);
+  app.use('/api/reviewers', reviewerRoutes);
 
   /* ── Serve built React app (production / tunnel mode) ──────── */
   // const distPath = path.join(__dirname, '../../frontend/dist');

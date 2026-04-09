@@ -7,6 +7,7 @@ const links = [
   { to: '/about', label: 'About' },
   { to: '/current-issue', label: 'Issues' },
   { to: '/editorial-board', label: 'Editorial Board' },
+  { to: '/join-reviewer', label: 'Join Reviewer' },
   { to: '/policies', label: 'Policies' },
   { to: '/contact', label: 'Contact' }
 ];

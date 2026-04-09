@@ -52,6 +52,7 @@ const Footer = () => {
               { to: '/about', label: 'About' },
               { to: '/current-issue', label: 'Issues' },
               { to: '/submit-paper', label: 'Submit Paper' },
+              { to: '/join-reviewer', label: 'Join Reviewer' },
               { to: '/editorial-board',label: 'Editorial Board' },
               { to: '/policies', label: 'Policies' },
               { to: '/author-guidelines', label: 'Author Guidelines' },

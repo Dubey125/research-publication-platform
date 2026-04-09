@@ -15,6 +15,7 @@ import CurrentIssuePage from './pages/CurrentIssuePage';
 import ArchivesPage from './pages/ArchivesPage';
 import ContactPage from './pages/ContactPage';
 import SubmitManuscriptPage from './pages/SubmitManuscriptPage';
+import JoinReviewerPage from './pages/JoinReviewerPage';
 import AdminLoginPage from './pages/admin/AdminLoginPage';
 import AdminDashboardPage from './pages/admin/AdminDashboardPage';
 import NotFoundPage from './pages/NotFoundPage';
@@ -37,6 +38,7 @@ const App = () => (
       <Route path="/contact" element={<ContactPage />} />
       <Route path="/submit-manuscript" element={<SubmitManuscriptPage />} />
       <Route path="/submit-paper" element={<SubmitManuscriptPage />} />
+      <Route path="/join-reviewer" element={<JoinReviewerPage />} />
       <Route path="/admin/login" element={<AdminLoginPage />} />
       <Route
         path="/admin/dashboard"
