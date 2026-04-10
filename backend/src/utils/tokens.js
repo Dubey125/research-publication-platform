@@ -6,6 +6,7 @@ const refreshSecret = process.env.JWT_REFRESH_SECRET || process.env.JWT_SECRET;
 
 export const accessTokenTtl = process.env.JWT_EXPIRES_IN || '15m';
 export const refreshTokenTtl = process.env.JWT_REFRESH_EXPIRES_IN || '7d';
+export const csrfTokenTtl = process.env.CSRF_TOKEN_EXPIRES_IN || refreshTokenTtl;
 
 const msFromDuration = (duration) => {
   const value = String(duration).trim();
@@ -63,8 +64,11 @@ export const generateRefreshToken = (adminId) => {
   });
 };
 
+export const generateCsrfToken = () => crypto.randomBytes(32).toString('hex');
+
 export const verifyRefreshToken = (token) => jwt.verify(token, refreshSecret);
 
 export const hashToken = (token) => crypto.createHash('sha256').update(token).digest('hex');
 
 export const refreshTokenExpiryDate = () => new Date(Date.now() + msFromDuration(refreshTokenTtl));
+export const csrfTokenExpiryDate = () => new Date(Date.now() + msFromDuration(csrfTokenTtl));

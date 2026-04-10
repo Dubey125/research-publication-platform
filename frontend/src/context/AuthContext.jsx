@@ -1,5 +1,5 @@
 import { createContext, useContext, useEffect, useMemo, useState } from 'react';
-import api, { clearAccessToken, setAccessToken } from '../utils/api';
+import api, { clearAccessToken, clearCsrfToken, setAccessToken, setCsrfToken } from '../utils/api';
 
 const AuthContext = createContext();
 
@@ -18,6 +18,7 @@ export const AuthProvider = ({ children }) => {
         const { data } = await api.post('/auth/refresh');
         if (data?.token) {
           setAccessToken(data.token);
+          setCsrfToken(data.csrfToken);
           setToken(data.token);
           const me = await api.get('/auth/me');
           if (me?.data?.admin) {
@@ -27,6 +28,7 @@ export const AuthProvider = ({ children }) => {
         }
       } catch (_error) {
         clearAccessToken();
+        clearCsrfToken();
         setToken(null);
         setAdmin(null);
         localStorage.removeItem('ijtse_admin');
@@ -43,6 +45,7 @@ export const AuthProvider = ({ children }) => {
     setAdmin(data.admin);
     setToken(data.token);
     setAccessToken(data.token);
+    setCsrfToken(data.csrfToken);
     localStorage.setItem('ijtse_admin', JSON.stringify(data.admin));
   };
 
@@ -51,6 +54,7 @@ export const AuthProvider = ({ children }) => {
       // Best-effort server-side token revocation.
     });
     clearAccessToken();
+    clearCsrfToken();
     setAdmin(null);
     setToken(null);
     localStorage.removeItem('ijtse_admin');

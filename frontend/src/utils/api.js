@@ -22,6 +22,7 @@ const api = axios.create({
 });
 
 let accessToken = null;
+let csrfToken = localStorage.getItem('ijtse_csrf_token');
 
 export const setAccessToken = (token) => {
   accessToken = token || null;
@@ -33,10 +34,31 @@ export const clearAccessToken = () => {
   accessToken = null;
 };
 
+export const setCsrfToken = (token) => {
+  csrfToken = token || null;
+  if (csrfToken) {
+    localStorage.setItem('ijtse_csrf_token', csrfToken);
+  } else {
+    localStorage.removeItem('ijtse_csrf_token');
+  }
+};
+
+export const clearCsrfToken = () => {
+  csrfToken = null;
+  localStorage.removeItem('ijtse_csrf_token');
+};
+
 api.interceptors.request.use((config) => {
   if (accessToken) {
     config.headers.Authorization = `Bearer ${accessToken}`;
   }
+
+  const method = (config.method || 'get').toLowerCase();
+  const isWriteMethod = ['post', 'put', 'patch', 'delete'].includes(method);
+  if (csrfToken && isWriteMethod) {
+    config.headers['X-CSRF-Token'] = csrfToken;
+  }
+
   return config;
 });
 
@@ -63,12 +85,17 @@ api.interceptors.response.use(
       const { data } = await api.post('/auth/refresh');
       if (data?.token) {
         setAccessToken(data.token);
+        setCsrfToken(data.csrfToken);
         originalRequest.headers = originalRequest.headers || {};
         originalRequest.headers.Authorization = `Bearer ${data.token}`;
+        if (data?.csrfToken) {
+          originalRequest.headers['X-CSRF-Token'] = data.csrfToken;
+        }
       }
       return api(originalRequest);
     } catch (refreshError) {
       clearAccessToken();
+      clearCsrfToken();
       localStorage.removeItem('ijtse_admin');
       return Promise.reject(refreshError);
     }

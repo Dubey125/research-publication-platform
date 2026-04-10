@@ -4,6 +4,12 @@ on:
   push:
     branches: [ main, master ]
   pull_request:
+  workflow_dispatch:
+    inputs:
+      zap_target_url:
+        description: Full URL for OWASP ZAP baseline scan (for example https://staging.example.com)
+        required: false
+        type: string
 
 jobs:
   security:
@@ -39,3 +45,24 @@ jobs:
 
       - name: Frontend production audit
         run: npm --prefix frontend audit --omit=dev --audit-level=high
+
+  semgrep:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Run Semgrep
+        uses: returntocorp/semgrep-action@v1
+        with:
+          config: p/owasp-top-ten
+
+  zap_baseline:
+    if: github.event_name == 'workflow_dispatch' && inputs.zap_target_url != ''
+    runs-on: ubuntu-latest
+    steps:
+      - name: OWASP ZAP Baseline
+        uses: zaproxy/action-baseline@v0.14.0
+        with:
+          target: ${{ inputs.zap_target_url }}
+          fail_action: true

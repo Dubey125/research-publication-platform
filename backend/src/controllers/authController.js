@@ -2,7 +2,9 @@ import Admin from '../models/Admin.js';
 import generateToken from '../utils/generateToken.js';
 import {
   accessTokenTtl,
+  csrfTokenExpiryDate,
   clearRefreshCookieOptions,
+  generateCsrfToken,
   generateRefreshToken,
   hashToken,
   refreshCookieName,
@@ -18,8 +20,11 @@ const ACCOUNT_LOCK_MS = ACCOUNT_LOCK_MINUTES * 60 * 1000;
 const issueSessionTokens = async (res, admin) => {
   const token = generateToken(admin._id);
   const refreshToken = generateRefreshToken(admin._id);
+  const csrfToken = generateCsrfToken();
   admin.refreshTokenHash = hashToken(refreshToken);
   admin.refreshTokenExpiresAt = refreshTokenExpiryDate();
+  admin.csrfTokenHash = hashToken(csrfToken);
+  admin.csrfTokenExpiresAt = csrfTokenExpiryDate();
   await admin.save({ validateBeforeSave: false });
 
   res.cookie(refreshCookieName, refreshToken, refreshCookieOptions);
@@ -27,7 +32,8 @@ const issueSessionTokens = async (res, admin) => {
   return {
     token,
     accessToken: token,
-    accessTokenExpiresIn: accessTokenTtl
+    accessTokenExpiresIn: accessTokenTtl,
+    csrfToken
   };
 };
 
@@ -113,6 +119,8 @@ export const changePassword = async (req, res, next) => {
     admin.password = newPassword;
     admin.refreshTokenHash = null;
     admin.refreshTokenExpiresAt = null;
+    admin.csrfTokenHash = null;
+    admin.csrfTokenExpiresAt = null;
     await admin.save();
     res.clearCookie(refreshCookieName, clearRefreshCookieOptions);
     return res.json({ success: true, message: 'Password changed successfully.' });
@@ -133,13 +141,21 @@ export const refreshSession = async (req, res, next) => {
       return res.status(401).json({ success: false, message: 'Invalid refresh token.' });
     }
 
-    const admin = await Admin.findById(decoded.id).select('+refreshTokenHash +refreshTokenExpiresAt');
+    const admin = await Admin.findById(decoded.id).select('+refreshTokenHash +refreshTokenExpiresAt +csrfTokenHash +csrfTokenExpiresAt');
     const hashed = hashToken(refreshToken);
+
+    if (admin?.refreshTokenHash && admin.refreshTokenHash !== hashed) {
+      admin.refreshTokenHash = null;
+      admin.refreshTokenExpiresAt = null;
+      admin.csrfTokenHash = null;
+      admin.csrfTokenExpiresAt = null;
+      await admin.save({ validateBeforeSave: false });
+      return res.status(401).json({ success: false, message: 'Session revoked. Please log in again.' });
+    }
 
     if (
       !admin ||
       !admin.refreshTokenHash ||
-      admin.refreshTokenHash !== hashed ||
       !admin.refreshTokenExpiresAt ||
       admin.refreshTokenExpiresAt < new Date()
     ) {
@@ -167,7 +183,9 @@ export const logoutAdmin = async (req, res, next) => {
         if (decoded?.id) {
           await Admin.findByIdAndUpdate(decoded.id, {
             refreshTokenHash: null,
-            refreshTokenExpiresAt: null
+            refreshTokenExpiresAt: null,
+            csrfTokenHash: null,
+            csrfTokenExpiresAt: null
           });
         }
       } catch (_error) {

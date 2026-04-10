@@ -32,6 +32,16 @@ const adminSchema = new mongoose.Schema(
       select: false,
       default: null
     },
+    csrfTokenHash: {
+      type: String,
+      select: false,
+      default: null
+    },
+    csrfTokenExpiresAt: {
+      type: Date,
+      select: false,
+      default: null
+    },
     failedLoginAttempts: {
       type: Number,
       default: 0,
