@@ -7,7 +7,7 @@
   import morgan from 'morgan';
   import mongoSanitize from 'express-mongo-sanitize';
   import { fileURLToPath } from 'url';
-  import { globalLimiter } from './middlewares/rateLimit.js';
+  import { globalLimiter, writeLimiter } from './middlewares/rateLimit.js';
   import { enforceHttps } from './middlewares/enforceHttps.js';
   import { notFound } from './middlewares/notFound.js';
   import { errorHandler } from './middlewares/errorHandler.js';
@@ -39,6 +39,9 @@
     .filter(Boolean);
 
   const isProduction = process.env.NODE_ENV === 'production';
+  const coopPolicy = process.env.COOP_POLICY || 'same-origin';
+  const coepPolicy = process.env.COEP_POLICY || 'require-corp';
+  const corpPolicy = process.env.CORP_POLICY || 'cross-origin';
 
   // Do not allow localhost defaults in production unless explicitly configured.
   const allowedOrigins = isProduction
@@ -60,8 +63,10 @@
 
   app.use(
     helmet({
-      // Prevent browser blocking image/file responses when frontend and API run on different origins.
-      crossOriginResourcePolicy: { policy: 'cross-origin' },
+      // Explicitly set cross-origin isolation-related headers.
+      crossOriginOpenerPolicy: { policy: coopPolicy },
+      crossOriginEmbedderPolicy: coepPolicy === 'unsafe-none' ? false : { policy: coepPolicy },
+      crossOriginResourcePolicy: { policy: corpPolicy },
       referrerPolicy: { policy: 'no-referrer' },
       hsts: isProduction
         ? {
@@ -82,6 +87,12 @@
   );
   app.options('*', cors({ origin: corsOrigin, credentials: true }));
   app.use(globalLimiter);
+  app.use((req, res, next) => {
+    if (['POST', 'PUT', 'PATCH', 'DELETE'].includes(req.method)) {
+      return writeLimiter(req, res, next);
+    }
+    return next();
+  });
   app.use(cookieParser());
   app.use(express.json({ limit: '2mb' }));
   app.use(express.urlencoded({ extended: false, limit: '2mb' }));

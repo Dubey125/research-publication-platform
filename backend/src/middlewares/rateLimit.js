@@ -32,3 +32,11 @@ export const authLimiter = rateLimit({
   legacyHeaders: false,
   message: { success: false, message: 'Too many auth requests. Try again later.' }
 });
+
+export const writeLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: Number(process.env.WRITE_RATE_LIMIT_MAX || 120),
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { success: false, message: 'Too many write requests. Please try again later.' }
+});
