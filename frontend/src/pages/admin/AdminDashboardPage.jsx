@@ -11,6 +11,27 @@ import api from '../../utils/api';
 import { useAuth } from '../../context/AuthContext';
 import { CATEGORIES } from '../../utils/constants';
 
+const FILE_BASE = (() => {
+  const explicitBase = String(import.meta.env.VITE_FILE_BASE_URL || '').trim();
+  if (explicitBase) return explicitBase.replace(/\/+$/, '');
+
+  const apiBase = String(import.meta.env.VITE_API_URL || '').trim();
+  if (/^https?:\/\//i.test(apiBase)) return apiBase.replace(/\/api\/?$/i, '');
+
+  return 'http://localhost:5000';
+})();
+
+const toKeywordList = (value) => {
+  if (Array.isArray(value)) return value;
+  if (typeof value === 'string') {
+    return value
+      .split(',')
+      .map((item) => item.trim())
+      .filter(Boolean);
+  }
+  return [];
+};
+
 /* helpers */
 const STATUS_STYLES = {
   Pending:       'bg-amber-100 text-amber-700 dark:bg-amber-900/40 dark:text-amber-500',
@@ -80,7 +101,7 @@ function exportCSV(submissions) {
   const headers = ['Title', 'Author', 'Email', 'Affiliation', 'Status', 'Keywords', 'Submitted'];
   const rows = submissions.map((s) => [
     `"${s.paperTitle}"`, `"${s.authorName}"`, s.email, `"${s.affiliation}"`,
-    s.status, `"${(s.keywords || []).join('; ')}"`,
+    s.status, `"${toKeywordList(s.keywords).join('; ')}"`,
     new Date(s.createdAt).toLocaleDateString()
   ]);
   const csv = [headers, ...rows].map((r) => r.join(',')).join('\n');
@@ -628,7 +649,7 @@ const AdminDashboardPage = () => {
                           <div>
                             <p className="text-xs font-bold uppercase tracking-wide text-slate-400">Keywords</p>
                             <div className="mt-1 flex flex-wrap gap-1">
-                              {(s.keywords || []).map((kw) => <span key={kw} className="rounded-full bg-slate-100 px-2 py-0.5 text-xs text-slate-600 dark:text-slate-400">{kw}</span>)}
+                              {toKeywordList(s.keywords).map((kw) => <span key={kw} className="rounded-full bg-slate-100 px-2 py-0.5 text-xs text-slate-600 dark:text-slate-400">{kw}</span>)}
                             </div>
                           </div>
                           {s.adminNotes && (
