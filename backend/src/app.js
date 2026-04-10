@@ -8,6 +8,7 @@
   import mongoSanitize from 'express-mongo-sanitize';
   import { fileURLToPath } from 'url';
   import { globalLimiter } from './middlewares/rateLimit.js';
+  import { enforceHttps } from './middlewares/enforceHttps.js';
   import { notFound } from './middlewares/notFound.js';
   import { errorHandler } from './middlewares/errorHandler.js';
   import authRoutes from './routes/authRoutes.js';
@@ -29,6 +30,7 @@
   const app = express();
   app.disable('x-powered-by');
   app.set('trust proxy', process.env.TRUST_PROXY || 1);
+  app.use(enforceHttps);
 
   const defaultOrigins = ['http://localhost:5173', 'http://127.0.0.1:5173', 'http://localhost:5174', 'http://127.0.0.1:5174'];
   const configuredOrigins = (process.env.CORS_ORIGIN || process.env.CLIENT_URL || '')
@@ -36,11 +38,12 @@
     .map((origin) => origin.trim())
     .filter(Boolean);
 
-  // For development convenience, if we detect we're running locally, we can be more permissive.
-  const allowedOrigins = [
-    ...defaultOrigins,
-    ...configuredOrigins
-  ];
+  const isProduction = process.env.NODE_ENV === 'production';
+
+  // Do not allow localhost defaults in production unless explicitly configured.
+  const allowedOrigins = isProduction
+    ? configuredOrigins
+    : [...defaultOrigins, ...configuredOrigins];
 
   const corsOrigin = (origin, callback) => {
     if (!origin) {
@@ -48,7 +51,7 @@
     }
 
     // Allow any localhost origin in development, or strict check
-    if (allowedOrigins.includes(origin) || (process.env.NODE_ENV === 'development' && origin.startsWith('http://localhost:'))) {
+    if (allowedOrigins.includes(origin) || (!isProduction && origin.startsWith('http://localhost:'))) {
       return callback(null, true);
     }
 
@@ -59,6 +62,14 @@
     helmet({
       // Prevent browser blocking image/file responses when frontend and API run on different origins.
       crossOriginResourcePolicy: { policy: 'cross-origin' },
+      referrerPolicy: { policy: 'no-referrer' },
+      hsts: isProduction
+        ? {
+            maxAge: 31536000,
+            includeSubDomains: true,
+            preload: false
+          }
+        : false,
     })
   );
   app.use(
@@ -66,7 +77,7 @@
       origin: corsOrigin,
       credentials: true,
       methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
-      allowedHeaders: ['Content-Type', 'Authorization'],
+      allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'X-CSRF-Token'],
     })
   );
   app.options('*', cors({ origin: corsOrigin, credentials: true }));
@@ -89,7 +100,17 @@
     res.type('text/plain').send('ok');
   });
 
-  app.use('/uploads', express.static(path.join(__dirname, '..', process.env.UPLOAD_DIR || 'uploads')));
+  app.use(
+    '/uploads',
+    express.static(path.join(__dirname, '..', process.env.UPLOAD_DIR || 'uploads'), {
+      index: false,
+      dotfiles: 'deny',
+      maxAge: '7d',
+      setHeaders: (res) => {
+        res.setHeader('X-Content-Type-Options', 'nosniff');
+      }
+    })
+  );
 
   app.use('/api/auth', authRoutes);
   app.use('/auth', authRoutes);

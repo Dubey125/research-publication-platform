@@ -8,6 +8,10 @@
     "husky": "^9.1.7"
   },
   "scripts": {
-    "prepare": "husky"
+    "prepare": "husky",
+    "security:scan-secrets": "node scripts/scan-secrets-repo.js",
+    "security:audit:backend": "npm --prefix backend audit --omit=dev --audit-level=high",
+    "security:audit:frontend": "npm --prefix frontend audit --omit=dev --audit-level=high",
+    "security:check": "npm run security:scan-secrets; npm run security:audit:backend; npm run security:audit:frontend"
   }
 }

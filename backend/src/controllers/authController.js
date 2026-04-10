@@ -11,6 +11,10 @@ import {
   verifyRefreshToken
 } from '../utils/tokens.js';
 
+const MAX_FAILED_LOGIN_ATTEMPTS = Number(process.env.MAX_FAILED_LOGIN_ATTEMPTS || 5);
+const ACCOUNT_LOCK_MINUTES = Number(process.env.ACCOUNT_LOCK_MINUTES || 15);
+const ACCOUNT_LOCK_MS = ACCOUNT_LOCK_MINUTES * 60 * 1000;
+
 const issueSessionTokens = async (res, admin) => {
   const token = generateToken(admin._id);
   const refreshToken = generateRefreshToken(admin._id);
@@ -31,10 +35,32 @@ export const loginAdmin = async (req, res, next) => {
   try {
     const { email, password } = req.body;
     const normalizedEmail = email?.trim().toLowerCase();
-    const admin = await Admin.findOne({ email: normalizedEmail }).select('+password +refreshTokenHash +refreshTokenExpiresAt');
+    const admin = await Admin.findOne({ email: normalizedEmail }).select(
+      '+password +refreshTokenHash +refreshTokenExpiresAt +failedLoginAttempts +lockUntil'
+    );
+
+    if (admin?.lockUntil && admin.lockUntil > new Date()) {
+      return res.status(423).json({
+        success: false,
+        message: 'Account is temporarily locked due to repeated failed login attempts. Please try again later.'
+      });
+    }
+
     if (!admin || !(await admin.comparePassword(password))) {
+      if (admin) {
+        admin.failedLoginAttempts = (admin.failedLoginAttempts || 0) + 1;
+        if (admin.failedLoginAttempts >= MAX_FAILED_LOGIN_ATTEMPTS) {
+          admin.lockUntil = new Date(Date.now() + ACCOUNT_LOCK_MS);
+          admin.failedLoginAttempts = 0;
+        }
+        await admin.save({ validateBeforeSave: false });
+      }
+
       return res.status(401).json({ success: false, message: 'Invalid credentials' });
     }
+
+    admin.failedLoginAttempts = 0;
+    admin.lockUntil = null;
 
     const session = await issueSessionTokens(res, admin);
 

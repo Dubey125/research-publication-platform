@@ -1,6 +1,8 @@
 #!/usr/bin/env node
 
-const { execFileSync, execSync } = require('child_process');
+const { execSync } = require('child_process');
+const fs = require('fs');
+const path = require('path');
 
 const PLACEHOLDER_VALUE = /^(your_|replace_|changeme|example|sample|dummy|<|\$\{)/i;
 const SENSITIVE_ENV_KEY = /(?:SECRET|TOKEN|PASSWORD|PRIVATE_KEY|API_KEY)/i;
@@ -23,24 +25,20 @@ const isEnvLikeFile = (filePath) => {
   return fileName === '.env' || fileName.startsWith('.env.') || fileName.endsWith('.env') || fileName.endsWith('.env.example');
 };
 
-const getStagedFiles = () => {
-  const output = execSync('git diff --cached --name-only --diff-filter=ACMR', { encoding: 'utf8' }).trim();
+const getTrackedFiles = () => {
+  const output = execSync('git ls-files', { encoding: 'utf8' }).trim();
   if (!output) return [];
   return output.split(/\r?\n/).filter(Boolean);
 };
 
 const isBinaryPath = (filePath) => {
-  const dot = filePath.lastIndexOf('.');
-  if (dot === -1) return false;
-  return BINARY_EXTENSIONS.has(filePath.slice(dot).toLowerCase());
+  const extension = path.extname(filePath).toLowerCase();
+  return BINARY_EXTENSIONS.has(extension);
 };
 
-const getStagedContent = (filePath) => {
+const readText = (filePath) => {
   try {
-    return execFileSync('git', ['show', `:${filePath}`], {
-      encoding: 'utf8',
-      maxBuffer: 10 * 1024 * 1024
-    });
+    return fs.readFileSync(filePath, 'utf8');
   } catch {
     return '';
   }
@@ -62,10 +60,7 @@ const findEnvAssignmentSecrets = (content) => {
     value = value.replace(/^['\"]|['\"]$/g, '');
     if (!value || PLACEHOLDER_VALUE.test(value)) continue;
 
-    findings.push({
-      line: index + 1,
-      label: `Sensitive env assignment (${key})`
-    });
+    findings.push({ line: index + 1, label: `Sensitive env assignment (${key})` });
   }
 
   return findings;
@@ -90,17 +85,13 @@ const findPatternSecrets = (content) => {
 };
 
 const main = () => {
-  const stagedFiles = getStagedFiles();
-  if (stagedFiles.length === 0) {
-    process.exit(0);
-  }
-
+  const files = getTrackedFiles();
   const allFindings = [];
 
-  for (const filePath of stagedFiles) {
+  for (const filePath of files) {
     if (isBinaryPath(filePath)) continue;
 
-    const content = getStagedContent(filePath);
+    const content = readText(filePath);
     if (!content) continue;
 
     const envFindings = isEnvLikeFile(filePath) ? findEnvAssignmentSecrets(content) : [];
@@ -112,17 +103,18 @@ const main = () => {
   }
 
   if (allFindings.length === 0) {
+    console.log('No obvious secrets found in tracked files.');
     process.exit(0);
   }
 
-  console.error('\n[pre-commit] Potential secrets detected in staged changes:\n');
+  console.error('\nPotential secrets detected:\n');
   for (const fileResult of allFindings) {
     for (const finding of fileResult.findings) {
       console.error(`- ${fileResult.filePath}:${finding.line} -> ${finding.label}`);
     }
   }
 
-  console.error('\nCommit blocked. Remove secrets or move them to ignored env files.');
+  console.error('\nSecurity scan failed. Remove secrets from repository content.');
   process.exit(1);
 };
 

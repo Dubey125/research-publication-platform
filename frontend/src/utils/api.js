@@ -21,10 +21,21 @@ const api = axios.create({
   withCredentials: true
 });
 
+let accessToken = null;
+
+export const setAccessToken = (token) => {
+  accessToken = token || null;
+};
+
+export const getAccessToken = () => accessToken;
+
+export const clearAccessToken = () => {
+  accessToken = null;
+};
+
 api.interceptors.request.use((config) => {
-  const token = localStorage.getItem('ijtse_admin_token');
-  if (token) {
-    config.headers.Authorization = `Bearer ${token}`;
+  if (accessToken) {
+    config.headers.Authorization = `Bearer ${accessToken}`;
   }
   return config;
 });
@@ -51,14 +62,14 @@ api.interceptors.response.use(
       originalRequest._retry = true;
       const { data } = await api.post('/auth/refresh');
       if (data?.token) {
-        localStorage.setItem('ijtse_admin_token', data.token);
+        setAccessToken(data.token);
         originalRequest.headers = originalRequest.headers || {};
         originalRequest.headers.Authorization = `Bearer ${data.token}`;
       }
       return api(originalRequest);
     } catch (refreshError) {
+      clearAccessToken();
       localStorage.removeItem('ijtse_admin');
-      localStorage.removeItem('ijtse_admin_token');
       return Promise.reject(refreshError);
     }
   }
