@@ -46,6 +46,7 @@ const navLinks = [
   { id: 'sec-papers',      label: 'Papers',          icon: FileText },
   { id: 'sec-editorial',   label: 'Editorial Board', icon: Users },
   { id: 'sec-submissions', label: 'Submissions',     icon: Inbox },
+  { id: 'sec-reviewers',   label: 'Reviewers',       icon: Users },
   { id: 'sec-content',     label: 'Website Content', icon: FilePenLine },
   { id: 'sec-announcements', label: 'Announcements', icon: Bell },
   { id: 'sec-siteinfo',    label: 'Site Info',       icon: Globe },
@@ -120,6 +121,7 @@ const AdminDashboardPage = () => {
   const [papers,      setPapers]      = useState([]);
   const [submissions, setSubmissions] = useState([]);
   const [editorial,   setEditorial]   = useState([]);
+  const [reviewers,   setReviewers]   = useState([]);
 
   const [issueForm,      setIssueForm]      = useState(defaultIssue);
   const [paperForm,      setPaperForm]      = useState(defaultPaper);
@@ -165,11 +167,12 @@ const AdminDashboardPage = () => {
   const loadAll = async () => {
     setLoading(true);
     try {
-      const [s, i, p, sub, ed, me, site, announce] = await Promise.all([
+      const [s, i, p, sub, rev, ed, me, site, announce] = await Promise.all([
         api.get('/stats'),
         api.get('/issues'),
         api.get('/papers', { params: { limit: 200 } }),
         api.get('/submissions'),
+        api.get('/reviewers'),
         api.get('/editorial'),
         api.get('/auth/me'),
         api.get('/settings'),
@@ -179,6 +182,7 @@ const AdminDashboardPage = () => {
       setIssues(i.data.issues || []);
       setPapers(p.data.papers || []);
       setSubmissions(sub.data.submissions || []);
+      setReviewers(rev.data.applications || []);
       setEditorial(ed.data.members || []);
       setAnnouncements(announce.data.announcements || []);
       setProfileForm({ name: me.data.admin?.name || '', email: me.data.admin?.email || '' });
@@ -376,6 +380,26 @@ const AdminDashboardPage = () => {
       setPwForm({ currentPassword: '', newPassword: '', confirmNew: '' });
     } catch (err) { showToast('error', err?.response?.data?.message || 'Failed.'); }
   };
+
+  const handleStatusChange = async (id, status) => {
+    try {
+      await api.patch(`/reviewers/${id}/status`, { status });
+      showToast('success', `Reviewer application marked as ${status}.`);
+      loadAll();
+    } catch {
+      showToast('error', 'Failed to update status.');
+    }
+  };
+
+  const handleReviewerDelete = (id) => setConfirm({
+    message: 'Delete this reviewer application permanently?',
+    onConfirm: async () => {
+      await api.delete(`/reviewers/${id}`);
+      setConfirm(null);
+      showToast('success', 'Application deleted.');
+      loadAll();
+    }
+  });
 
   /* RENDER */
   return (
@@ -806,6 +830,69 @@ const AdminDashboardPage = () => {
                   ))}
                 </div>
               </div>
+            </div>
+          </section>
+
+          {/* REVIEWERS */}
+          <section id="sec-reviewers" className="scroll-mt-24">
+            <h2 className="section-title mb-4">Reviewer Applications</h2>
+
+            {reviewers.length === 0 && (
+              <div className="rounded-2xl border border-dashed border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 py-12 text-center">
+                <Users size={32} className="mx-auto mb-3 text-slate-300" />
+                <p className="text-sm text-slate-400">No reviewer applications yet.</p>
+              </div>
+            )}
+
+            <div className="space-y-4">
+              {reviewers.map((app) => (
+                <div key={app._id} className="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-sm overflow-hidden">
+                  <div className="p-5">
+                    <div className="flex flex-wrap items-start justify-between gap-3 mb-4">
+                      <div className="min-w-0 flex-1">
+                        <p className="font-semibold text-lg leading-snug text-slate-900 dark:text-white">{app.fullName}</p>
+                        <p className="font-medium mt-1 text-sm text-slate-700 dark:text-slate-300">{app.designation} at {app.affiliation}</p>
+                        <p className="text-sm text-slate-500 mt-1">{app.email}</p>
+                      </div>
+                      <div className="flex shrink-0 items-center gap-2">
+                        <span className={`rounded-full px-3 py-1 text-xs font-bold border ${app.status === 'Pending' ? 'bg-amber-50 text-amber-700 border-amber-200' : app.status === 'Approved' ? 'bg-green-50 text-green-700 border-green-200' : 'bg-red-50 text-red-700 border-red-200'}`}>{app.status}</span>
+                      </div>
+                    </div>
+
+                    <div className="grid gap-6 md:grid-cols-2 mb-5">
+                      <div>
+                        <p className="text-xs font-bold uppercase tracking-wide text-slate-400">Expertise Areas</p>
+                        <div className="mt-2 flex flex-wrap gap-2">
+                          {app.expertiseAreas.map((area, i) => (
+                            <span key={i} className="rounded-md bg-indigo-50 text-indigo-700 px-2.5 py-1 text-xs font-medium">{area}</span>
+                          ))}
+                        </div>
+                      </div>
+                      <div className="text-sm text-slate-600 dark:text-slate-400">
+                        <p className="whitespace-pre-wrap"><span className="font-bold text-slate-700 dark:text-slate-300 block mb-1">Motivation:</span> {app.motivation}</p>
+                      </div>
+                    </div>
+
+                    <div className="text-sm text-slate-600 dark:text-slate-400 mb-6 bg-slate-50 dark:bg-slate-900/50 p-4 rounded-xl border border-slate-100 dark:border-slate-800">
+                      <p className="whitespace-pre-wrap"><span className="font-bold text-slate-700 dark:text-slate-300 block mb-2">Experience Summary:</span>{app.experienceSummary}</p>
+                    </div>
+
+                    <div className="flex flex-wrap items-center justify-between gap-4 pt-4 border-t border-slate-100 dark:border-slate-800">
+                      <div className="flex flex-wrap items-center gap-2">
+                        <button onClick={() => handleStatusChange(app._id, 'Approved')} className="rounded-lg bg-green-100 px-3 py-2 text-sm font-semibold text-green-700 hover:bg-green-200 transition">Approve</button>
+                        <button onClick={() => handleStatusChange(app._id, 'Rejected')} className="rounded-lg bg-amber-100 px-3 py-2 text-sm font-semibold text-amber-700 hover:bg-amber-200 transition">Reject</button>
+                        <button onClick={() => handleStatusChange(app._id, 'Pending')} className="rounded-lg bg-slate-100 px-3 py-2 text-sm font-semibold text-slate-700 hover:bg-slate-200 transition">Mark Pending</button>
+                      </div>
+                      <div className="flex items-center gap-3">
+                        <span className="text-xs text-slate-400">Applied: {new Date(app.createdAt).toLocaleDateString()}</span>
+                        <button onClick={() => handleReviewerDelete(app._id)} className="flex items-center gap-1.5 rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm font-semibold text-red-600 hover:bg-red-100 transition">
+                          <Trash2 size={14} /> Delete
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              ))}
             </div>
           </section>
 
