@@ -39,7 +39,9 @@ const JoinReviewerPage = () => {
         honeypot: ''
       });
     } catch (error) {
-      setStatus({ type: 'error', text: error?.response?.data?.message || 'Could not submit application. Please try again.' });
+      const apiError = error?.response?.data;
+      const errorMsg = apiError?.errors?.[0]?.msg || apiError?.message || 'Could not submit application. Please try again.';
+      setStatus({ type: 'error', text: errorMsg });
     } finally {
       setLoading(false);
     }
@@ -63,38 +65,38 @@ const JoinReviewerPage = () => {
           <div className="grid gap-5 md:grid-cols-2">
             <label className="block text-sm font-semibold text-slate-700 dark:text-slate-300">
               Full Name <span className="text-red-600">*</span>
-              <input className={`${fieldClass} mt-2`} value={form.fullName} onChange={(e) => setForm({ ...form, fullName: e.target.value })} required />
+              <input className={`${fieldClass} mt-2`} maxLength={120} value={form.fullName} onChange={(e) => setForm({ ...form, fullName: e.target.value })} required />
             </label>
             <label className="block text-sm font-semibold text-slate-700 dark:text-slate-300">
               Email Address <span className="text-red-600">*</span>
-              <input className={`${fieldClass} mt-2`} type="email" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} required />
+              <input className={`${fieldClass} mt-2`} type="email" maxLength={200} value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} required />
             </label>
           </div>
 
           <div className="grid gap-5 md:grid-cols-2">
             <label className="block text-sm font-semibold text-slate-700 dark:text-slate-300">
               Affiliation / Institution <span className="text-red-600">*</span>
-              <input className={`${fieldClass} mt-2`} value={form.affiliation} onChange={(e) => setForm({ ...form, affiliation: e.target.value })} required />
+              <input className={`${fieldClass} mt-2`} maxLength={200} value={form.affiliation} onChange={(e) => setForm({ ...form, affiliation: e.target.value })} required />
             </label>
             <label className="block text-sm font-semibold text-slate-700 dark:text-slate-300">
               Current Designation <span className="text-red-600">*</span>
-              <input className={`${fieldClass} mt-2`} value={form.designation} onChange={(e) => setForm({ ...form, designation: e.target.value })} required />
+              <input className={`${fieldClass} mt-2`} maxLength={150} value={form.designation} onChange={(e) => setForm({ ...form, designation: e.target.value })} required />
             </label>
           </div>
 
           <label className="block text-sm font-semibold text-slate-700 dark:text-slate-300">
             Expertise Areas (comma-separated) <span className="text-red-600">*</span>
-            <input className={`${fieldClass} mt-2`} placeholder="Example: Machine Learning, Cyber Security, IoT" value={form.expertiseAreas} onChange={(e) => setForm({ ...form, expertiseAreas: e.target.value })} required />
+            <input className={`${fieldClass} mt-2`} maxLength={500} placeholder="Example: Machine Learning, Cyber Security, IoT" value={form.expertiseAreas} onChange={(e) => setForm({ ...form, expertiseAreas: e.target.value })} required />
           </label>
 
           <label className="block text-sm font-semibold text-slate-700 dark:text-slate-300">
             Review Experience Summary <span className="text-red-600">*</span>
-            <textarea className={`${fieldClass} mt-2`} rows={5} value={form.experienceSummary} onChange={(e) => setForm({ ...form, experienceSummary: e.target.value })} required />
+            <textarea className={`${fieldClass} mt-2`} rows={5} minLength={20} maxLength={4000} value={form.experienceSummary} onChange={(e) => setForm({ ...form, experienceSummary: e.target.value })} required />
           </label>
 
           <label className="block text-sm font-semibold text-slate-700 dark:text-slate-300">
             Why do you want to join as reviewer? <span className="text-red-600">*</span>
-            <textarea className={`${fieldClass} mt-2`} rows={5} value={form.motivation} onChange={(e) => setForm({ ...form, motivation: e.target.value })} required />
+            <textarea className={`${fieldClass} mt-2`} rows={5} minLength={20} maxLength={3000} value={form.motivation} onChange={(e) => setForm({ ...form, motivation: e.target.value })} required />
           </label>
 
           <label className="flex items-start gap-3 text-sm text-slate-700 dark:text-slate-300 cursor-pointer">
