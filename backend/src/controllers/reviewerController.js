@@ -30,8 +30,21 @@ export const createReviewerApplication = async (req, res, next) => {
 
     sendMail({
       to: process.env.ADMIN_NOTIFY_EMAIL || process.env.EMAIL_USER,
-      subject: 'New Reviewer Application Received',
-      text: `Name: ${application.fullName}\nEmail: ${application.email}\nAffiliation: ${application.affiliation}\nDesignation: ${application.designation}\nExpertise: ${application.expertiseAreas.join(', ')}\n\nPlease review in admin panel.`
+      subject: 'New Reviewer Application Received - IJTSE',
+      html: `
+        <div style="font-family: Arial, sans-serif; color: #333; max-width: 600px; line-height: 1.6;">
+          <h2 style="color: #4F46E5;">New Reviewer Application Received</h2>
+          <p>A new application to join the reviewer panel has been submitted.</p>
+          <table style="width: 100%; border-collapse: collapse; margin-top: 15px;">
+            <tr><td style="padding: 8px; border: 1px solid #ddd; font-weight: bold; width: 30%;">Name</td><td style="padding: 8px; border: 1px solid #ddd;">${application.fullName}</td></tr>
+            <tr><td style="padding: 8px; border: 1px solid #ddd; font-weight: bold;">Email</td><td style="padding: 8px; border: 1px solid #ddd;">${application.email}</td></tr>
+            <tr><td style="padding: 8px; border: 1px solid #ddd; font-weight: bold;">Affiliation</td><td style="padding: 8px; border: 1px solid #ddd;">${application.affiliation}</td></tr>
+            <tr><td style="padding: 8px; border: 1px solid #ddd; font-weight: bold;">Designation</td><td style="padding: 8px; border: 1px solid #ddd;">${application.designation}</td></tr>
+            <tr><td style="padding: 8px; border: 1px solid #ddd; font-weight: bold;">Expertise Areas</td><td style="padding: 8px; border: 1px solid #ddd;">${application.expertiseAreas.join(', ')}</td></tr>
+          </table>
+          <p style="margin-top: 20px;">Please login to the admin panel to review the full details and approve or reject the application.</p>
+        </div>
+      `
     }).catch(() => {});
 
     return res.status(201).json({ success: true, message: 'Reviewer application submitted successfully' });
