@@ -849,10 +849,19 @@ const AdminDashboardPage = () => {
                 <div key={app._id} className="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-sm overflow-hidden">
                   <div className="p-5">
                     <div className="flex flex-wrap items-start justify-between gap-3 mb-4">
-                      <div className="min-w-0 flex-1">
-                        <p className="font-semibold text-lg leading-snug text-slate-900 dark:text-white">{app.fullName}</p>
-                        <p className="font-medium mt-1 text-sm text-slate-700 dark:text-slate-300">{app.designation} at {app.affiliation}</p>
-                        <p className="text-sm text-slate-500 mt-1">{app.email}</p>
+                      <div className="flex gap-4 items-start min-w-0 flex-1">
+                        {app.photoUrl ? (
+                          <img src={`${FILE_BASE}${app.photoUrl}`} alt={app.fullName} className="h-14 w-14 shrink-0 rounded-full object-cover border border-slate-200 dark:border-slate-700" />
+                        ) : (
+                          <div className="h-14 w-14 flex items-center justify-center shrink-0 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-500 font-bold text-xl uppercase border border-slate-200 dark:border-slate-700">
+                            {app.fullName.charAt(0)}
+                          </div>
+                        )}
+                        <div>
+                          <p className="font-semibold text-lg leading-snug text-slate-900 dark:text-white">{app.fullName}</p>
+                          <p className="font-medium mt-1 text-sm text-slate-700 dark:text-slate-300">{app.designation} at {app.affiliation}</p>
+                          <p className="text-sm text-slate-500 mt-1">{app.email}</p>
+                        </div>
                       </div>
                       <div className="flex shrink-0 items-center gap-2">
                         <span className={`rounded-full px-3 py-1 text-xs font-bold border ${app.status === 'Pending' ? 'bg-amber-50 text-amber-700 border-amber-200' : app.status === 'Approved' ? 'bg-green-50 text-green-700 border-green-200' : 'bg-red-50 text-red-700 border-red-200'}`}>{app.status}</span>

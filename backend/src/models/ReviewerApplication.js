@@ -9,6 +9,7 @@ const reviewerApplicationSchema = new mongoose.Schema(
     expertiseAreas: [{ type: String, trim: true, maxlength: 80 }],
     experienceSummary: { type: String, required: true, trim: true, maxlength: 4000 },
     motivation: { type: String, required: true, trim: true, maxlength: 3000 },
+    photoUrl: { type: String, trim: true },
     declarationAccepted: { type: Boolean, required: true },
     status: {
       type: String,

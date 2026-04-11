@@ -25,7 +25,8 @@ export const createReviewerApplication = async (req, res, next) => {
       expertiseAreas,
       experienceSummary: req.body.experienceSummary,
       motivation: req.body.motivation,
-      declarationAccepted: req.body.declarationAccepted === true || req.body.declarationAccepted === 'true'
+      declarationAccepted: req.body.declarationAccepted === true || req.body.declarationAccepted === 'true',
+      photoUrl: req.file ? `/uploads/${req.file.filename}` : undefined
     });
 
     sendMail({

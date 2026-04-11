@@ -16,6 +16,7 @@ const JoinReviewerPage = () => {
     declarationAccepted: false,
     honeypot: ''
   });
+  const [photoFile, setPhotoFile] = useState(null);
   const [status, setStatus] = useState({ type: '', text: '' });
   const [loading, setLoading] = useState(false);
 
@@ -25,7 +26,14 @@ const JoinReviewerPage = () => {
     setLoading(true);
 
     try {
-      await api.post('/reviewers', form);
+      const formData = new FormData();
+      Object.keys(form).forEach(key => formData.append(key, form[key]));
+      if (photoFile) formData.append('photoUrl', photoFile);
+
+      await api.post('/reviewers', formData, {
+        headers: { 'Content-Type': 'multipart/form-data' }
+      });
+
       setStatus({ type: 'success', text: 'Thank you. Your reviewer application has been submitted.' });
       setForm({
         fullName: '',
@@ -38,6 +46,7 @@ const JoinReviewerPage = () => {
         declarationAccepted: false,
         honeypot: ''
       });
+      setPhotoFile(null);
     } catch (error) {
       const apiError = error?.response?.data;
       const errorMsg = apiError?.errors?.[0]?.msg || apiError?.message || 'Could not submit application. Please try again.';
@@ -87,6 +96,11 @@ const JoinReviewerPage = () => {
           <label className="block text-sm font-semibold text-slate-700 dark:text-slate-300">
             Expertise Areas (comma-separated) <span className="text-red-600">*</span>
             <input className={`${fieldClass} mt-2`} maxLength={500} placeholder="Example: Machine Learning, Cyber Security, IoT" value={form.expertiseAreas} onChange={(e) => setForm({ ...form, expertiseAreas: e.target.value })} required />
+          </label>
+
+          <label className="block text-sm font-semibold text-slate-700 dark:text-slate-300">
+            Profile Photo (Optional, min 150x150px)
+            <input type="file" accept="image/*" className={`${fieldClass} mt-2 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100 dark:file:bg-indigo-900/30 dark:file:text-indigo-400`} onChange={(e) => setPhotoFile(e.target.files[0])} />
           </label>
 
           <label className="block text-sm font-semibold text-slate-700 dark:text-slate-300">
