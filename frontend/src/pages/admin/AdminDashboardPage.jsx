@@ -112,6 +112,22 @@ function exportCSV(submissions) {
   URL.revokeObjectURL(url);
 }
 
+function downloadFile(url, defaultFilename) {
+  fetch(url)
+    .then((response) => response.blob())
+    .then((blob) => {
+      const blobUrl = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = blobUrl;
+      a.download = defaultFilename || 'download';
+      document.body.appendChild(a); // required in some browsers
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(blobUrl);
+    })
+    .catch((err) => console.error('Download failed:', err));
+}
+
 const AdminDashboardPage = () => {
   const navigate = useNavigate();
   const { logout } = useAuth();
@@ -938,7 +954,13 @@ const AdminDashboardPage = () => {
                                         <p className="text-xs font-bold uppercase tracking-wide text-slate-400">Attached Profile Photo</p>
                                         <div className="mt-2 flex items-center gap-3">
                                           <img src={`${FILE_BASE}${app.photoUrl}`} alt={app.fullName} className="h-16 w-16 rounded-lg object-cover border border-slate-200 dark:border-slate-700" />
-                                          <a href={`${FILE_BASE}${app.photoUrl}`} download className="text-sm font-medium text-indigo-600 hover:text-indigo-700 dark:text-indigo-400">Download Photo</a>
+                                          <button
+                                            type="button"
+                                            onClick={(e) => { e.preventDefault(); downloadFile(`${FILE_BASE}${app.photoUrl}`, `reviewer-${app.fullName.replace(/\s+/g, '-').toLowerCase()}-photo${app.photoUrl.substring(app.photoUrl.lastIndexOf('.'))}`); }}
+                                            className="text-sm font-medium text-indigo-600 hover:text-indigo-700 dark:text-indigo-400 cursor-pointer"
+                                          >
+                                            Download Photo
+                                          </button>
                                         </div>
                                       </div>
                                     )}
