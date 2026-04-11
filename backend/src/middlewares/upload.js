@@ -80,5 +80,5 @@ export const uploadImage = multer({
 export const uploadReviewerPhoto = multer({
   storage,
   fileFilter: imageFilter,
-  limits: { fileSize: 300 * 1024 } // 300 KB limit
+  limits: { fileSize: 1 * 1024 * 1024 } // 1 MB limit
 });

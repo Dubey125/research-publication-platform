@@ -18,7 +18,7 @@ router.post('/', submissionLimiter, (req, res, next) => {
   uploadReviewerPhoto.single('photoUrl')(req, res, (err) => {
     if (err) {
       if (err.code === 'LIMIT_FILE_SIZE') {
-        return res.status(400).json({ success: false, message: 'Profile photo must be less than 300KB.' });
+        return res.status(400).json({ success: false, message: 'Profile photo must be less than 1MB.' });
       }
       return res.status(400).json({ success: false, message: err.message });
     }
