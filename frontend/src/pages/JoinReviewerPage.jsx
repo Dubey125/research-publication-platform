@@ -99,8 +99,22 @@ const JoinReviewerPage = () => {
           </label>
 
           <label className="block text-sm font-semibold text-slate-700 dark:text-slate-300">
-            Profile Photo (Optional, min 150x150px)
-            <input type="file" accept="image/*" className={`${fieldClass} mt-2 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100 dark:file:bg-indigo-900/30 dark:file:text-indigo-400`} onChange={(e) => setPhotoFile(e.target.files[0])} />
+            Profile Photo (Optional, min 150x150px, max 300KB)
+            <input
+              type="file"
+              accept="image/*"
+              className={`${fieldClass} mt-2 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100 dark:file:bg-indigo-900/30 dark:file:text-indigo-400`}
+              onChange={(e) => {
+                const file = e.target.files[0];
+                if (file && file.size > 300 * 1024) {
+                  alert('Profile photo size exceeds the 300KB limit.');
+                  e.target.value = null;
+                  setPhotoFile(null);
+                } else {
+                  setPhotoFile(file);
+                }
+              }}
+            />
           </label>
 
           <label className="block text-sm font-semibold text-slate-700 dark:text-slate-300">
