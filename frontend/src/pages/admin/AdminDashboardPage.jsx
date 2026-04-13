@@ -619,7 +619,7 @@ const AdminDashboardPage = () => {
                   {editorial.map((m) => (
                     <div key={m._id} className="flex items-center gap-3 rounded-xl border border-slate-100 bg-slate-50 px-4 py-3">
                       {m.photoUrl
-                        ? <img src={`${FILE_BASE}${m.photoUrl}`} alt={m.name} className="h-10 w-10 shrink-0 rounded-full object-cover" />
+                        ? <img src={m.photoUrl.startsWith('http') ? m.photoUrl : `${FILE_BASE}${m.photoUrl}`} alt={m.name} className="h-10 w-10 shrink-0 rounded-full object-cover" />
                         : <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-indigo-100 text-sm font-bold text-indigo-600">{m.name.charAt(0)}</div>
                       }
                       <div className="min-w-0 flex-1">
@@ -897,8 +897,8 @@ const AdminDashboardPage = () => {
                             <td className="px-5 py-3">
                               <div className="flex items-center gap-3">
                                 {app.photoUrl ? (
-                                  <a href={`${FILE_BASE}${app.photoUrl}`} target="_blank" rel="noreferrer" title="Click to view full photo">
-                                    <img src={`${FILE_BASE}${app.photoUrl}`} alt={app.fullName} className="h-10 w-10 shrink-0 rounded-full object-cover border border-slate-200 dark:border-slate-700" />
+                                  <a href={app.photoUrl.startsWith('http') ? app.photoUrl : `${FILE_BASE}${app.photoUrl}`} target="_blank" rel="noreferrer" title="Click to view full photo">
+                                    <img src={app.photoUrl.startsWith('http') ? app.photoUrl : `${FILE_BASE}${app.photoUrl}`} alt={app.fullName} className="h-10 w-10 shrink-0 rounded-full object-cover border border-slate-200 dark:border-slate-700" />
                                   </a>
                                 ) : (
                                   <div className="h-10 w-10 flex items-center justify-center shrink-0 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-500 font-bold text-sm uppercase ">
@@ -953,10 +953,10 @@ const AdminDashboardPage = () => {
                                       <div>
                                         <p className="text-xs font-bold uppercase tracking-wide text-slate-400">Attached Profile Photo</p>
                                         <div className="mt-2 flex items-center gap-3">
-                                          <img src={`${FILE_BASE}${app.photoUrl}`} alt={app.fullName} className="h-16 w-16 rounded-lg object-cover border border-slate-200 dark:border-slate-700" />
+                                          <img src={app.photoUrl.startsWith('http') ? app.photoUrl : `${FILE_BASE}${app.photoUrl}`} alt={app.fullName} className="h-16 w-16 rounded-lg object-cover border border-slate-200 dark:border-slate-700" />
                                           <button
                                             type="button"
-                                            onClick={(e) => { e.preventDefault(); downloadFile(`${FILE_BASE}${app.photoUrl}`, `reviewer-${app.fullName.replace(/\s+/g, '-').toLowerCase()}-photo${app.photoUrl.substring(app.photoUrl.lastIndexOf('.'))}`); }}
+                                            onClick={(e) => { e.preventDefault(); downloadFile(app.photoUrl.startsWith('http') ? app.photoUrl : `${FILE_BASE}${app.photoUrl}`, `reviewer-${app.fullName.replace(/\s+/g, '-').toLowerCase()}-photo${app.photoUrl.substring(app.photoUrl.lastIndexOf('.'))}`); }}
                                             className="text-sm font-medium text-indigo-600 hover:text-indigo-700 dark:text-indigo-400 cursor-pointer"
                                           >
                                             Download Photo

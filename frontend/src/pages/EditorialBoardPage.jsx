@@ -36,7 +36,7 @@ const EditorialBoardPage = () => {
               {filtered.map((member) => (
                 <article className="card" key={member._id}>
                   {member.photoUrl ? (
-                    <img src={`${import.meta.env.VITE_FILE_BASE_URL || 'http://localhost:5000'}${member.photoUrl}`} alt={member.name} className="h-44 w-full rounded-lg object-cover" />
+                    <img src={member.photoUrl.startsWith('http') ? member.photoUrl : `${import.meta.env.VITE_FILE_BASE_URL || 'http://localhost:5000'}${member.photoUrl}`} alt={member.name} className="h-44 w-full rounded-lg object-cover" />
                   ) : (
                     <div className="flex h-44 items-center justify-center rounded-lg bg-primary-50 text-primary-800">No Photo</div>
                   )}

@@ -4,7 +4,7 @@ export const createEditorialMember = async (req, res, next) => {
   try {
     const payload = { ...req.body };
     if (req.file) {
-      payload.photoUrl = `/uploads/${req.file.filename}`;
+      payload.photoUrl = req.file.path;
     }
     const member = await EditorialMember.create(payload);
     res.status(201).json({ success: true, member });
@@ -26,7 +26,7 @@ export const updateEditorialMember = async (req, res, next) => {
   try {
     const payload = { ...req.body };
     if (req.file) {
-      payload.photoUrl = `/uploads/${req.file.filename}`;
+      payload.photoUrl = req.file.path;
     }
     const member = await EditorialMember.findByIdAndUpdate(req.params.id, payload, {
       new: true,

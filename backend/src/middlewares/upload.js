@@ -2,6 +2,14 @@ import fs from 'fs';
 import path from 'path';
 import crypto from 'crypto';
 import multer from 'multer';
+import { v2 as cloudinary } from 'cloudinary';
+import { CloudinaryStorage } from 'multer-storage-cloudinary';
+
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET
+});
 
 const uploadDir = process.env.UPLOAD_DIR || 'uploads';
 const absoluteUploadDir = path.join(process.cwd(), uploadDir);
@@ -61,6 +69,14 @@ export const uploadManuscript = multer({
   limits: { fileSize: maxManuscriptFileSize }
 });
 
+const cloudinaryStorage = new CloudinaryStorage({
+  cloudinary: cloudinary,
+  params: {
+    folder: 'ijtse_images',
+    all_formats: ['jpg', 'jpeg', 'png', 'webp', 'gif']
+  }
+});
+
 const imageFilter = (_req, file, cb) => {
   const extension = path.extname(file.originalname || '').toLowerCase();
   const allowedImageExtensions = new Set(['.jpg', '.jpeg', '.png', '.webp', '.gif']);
@@ -72,13 +88,13 @@ const imageFilter = (_req, file, cb) => {
 };
 
 export const uploadImage = multer({
-  storage,
+  storage: cloudinaryStorage,
   fileFilter: imageFilter,
   limits: { fileSize: 5 * 1024 * 1024 }
 });
 
 export const uploadReviewerPhoto = multer({
-  storage,
+  storage: cloudinaryStorage,
   fileFilter: imageFilter,
   limits: { fileSize: 1 * 1024 * 1024 } // 1 MB limit
 });
