@@ -269,11 +269,11 @@ const AdminDashboardPage = () => {
       Object.entries(paperForm).forEach(([k, v]) => fd.append(k, v));
       if (paperFile) fd.append('pdf', paperFile);
       if (editingPaperId) {
-        await api.put(`/papers/${editingPaperId}`, fd, { headers: { 'Content-Type': 'multipart/form-data' } });
+        await api.put(`/papers/${editingPaperId}`, fd);
         showToast('success', 'Paper updated.');
       } else {
         if (!paperFile) return showToast('error', 'PDF file is required.');
-        await api.post('/papers', fd, { headers: { 'Content-Type': 'multipart/form-data' } });
+        await api.post('/papers', fd);
         showToast('success', 'Paper uploaded.');
       }
       setPaperForm(defaultPaper); setPaperFile(null); setEditingPaperId(''); loadAll();
@@ -298,10 +298,10 @@ const AdminDashboardPage = () => {
       Object.entries(editorialForm).forEach(([k, v]) => fd.append(k, v));
       if (editorialPhoto) fd.append('photo', editorialPhoto);
       if (editingEditorialId) {
-        await api.put(`/editorial/${editingEditorialId}`, fd, { headers: { 'Content-Type': 'multipart/form-data' } });
+        await api.put(`/editorial/${editingEditorialId}`, fd);
         showToast('success', 'Member updated.'); setEditingEditorialId('');
       } else {
-        await api.post('/editorial', fd, { headers: { 'Content-Type': 'multipart/form-data' } });
+        await api.post('/editorial', fd);
         showToast('success', 'Member added.');
       }
       setEditorialForm(defaultEditorial); setEditorialPhoto(null); loadAll();

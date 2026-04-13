@@ -30,9 +30,7 @@ const JoinReviewerPage = () => {
       Object.keys(form).forEach(key => formData.append(key, form[key]));
       if (photoFile) formData.append('photoUrl', photoFile);
 
-      await api.post('/reviewers', formData, {
-        headers: { 'Content-Type': 'multipart/form-data' }
-      });
+      await api.post('/reviewers', formData);
 
       setStatus({ type: 'success', text: 'Thank you. Your reviewer application has been submitted.' });
       setForm({

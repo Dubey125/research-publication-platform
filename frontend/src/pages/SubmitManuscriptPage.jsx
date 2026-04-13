@@ -65,9 +65,7 @@ const SubmitManuscriptPage = () => {
       const payload = new FormData();
       Object.entries(form).forEach(([key, value]) => payload.append(key, value));
       payload.append('manuscript', file);
-      await api.post('/submissions', payload, {
-        headers: { 'Content-Type': 'multipart/form-data' }
-      });
+      await api.post('/submissions', formData);
       setStatus({ type: 'success', text: 'Submission received successfully.' });
       setForm({
         authorName: '',
