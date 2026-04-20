@@ -20,6 +20,7 @@ export const createReviewerApplication = async (req, res, next) => {
     const application = await ReviewerApplication.create({
       fullName: req.body.fullName,
       email: req.body.email,
+      contactNumber: req.body.contactNumber,
       affiliation: req.body.affiliation,
       designation: req.body.designation,
       expertiseAreas,
@@ -39,6 +40,7 @@ export const createReviewerApplication = async (req, res, next) => {
           <table style="width: 100%; border-collapse: collapse; margin-top: 15px;">
             <tr><td style="padding: 8px; border: 1px solid #ddd; font-weight: bold; width: 30%;">Name</td><td style="padding: 8px; border: 1px solid #ddd;">${application.fullName}</td></tr>
             <tr><td style="padding: 8px; border: 1px solid #ddd; font-weight: bold;">Email</td><td style="padding: 8px; border: 1px solid #ddd;">${application.email}</td></tr>
+            <tr><td style="padding: 8px; border: 1px solid #ddd; font-weight: bold;">Contact Number</td><td style="padding: 8px; border: 1px solid #ddd;">${application.contactNumber}</td></tr>
             <tr><td style="padding: 8px; border: 1px solid #ddd; font-weight: bold;">Affiliation</td><td style="padding: 8px; border: 1px solid #ddd;">${application.affiliation}</td></tr>
             <tr><td style="padding: 8px; border: 1px solid #ddd; font-weight: bold;">Designation</td><td style="padding: 8px; border: 1px solid #ddd;">${application.designation}</td></tr>
             <tr><td style="padding: 8px; border: 1px solid #ddd; font-weight: bold;">Expertise Areas</td><td style="padding: 8px; border: 1px solid #ddd;">${application.expertiseAreas.join(', ')}</td></tr>

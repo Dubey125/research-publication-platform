@@ -885,6 +885,7 @@ const AdminDashboardPage = () => {
                       <tr className="border-b border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900/50">
                         <th className="px-5 py-4 font-semibold text-slate-600 dark:text-slate-400">Applicant</th>
                         <th className="px-5 py-4 font-semibold text-slate-600 dark:text-slate-400">Email</th>
+                        <th className="px-5 py-4 font-semibold text-slate-600 dark:text-slate-400">Contact</th>
                         <th className="px-5 py-4 font-semibold text-slate-600 dark:text-slate-400">Affiliation</th>
                         <th className="px-5 py-4 font-semibold text-slate-600 dark:text-slate-400 text-center">Status</th>
                         <th className="px-5 py-4 font-semibold text-slate-600 dark:text-slate-400 text-right">Actions</th>
@@ -909,6 +910,7 @@ const AdminDashboardPage = () => {
                               </div>
                             </td>
                             <td className="px-5 py-3 text-slate-600 dark:text-slate-400">{app.email}</td>
+                            <td className="px-5 py-3 text-slate-600 dark:text-slate-400">{app.contactNumber}</td>
                             <td className="px-5 py-3 text-slate-600 dark:text-slate-400 max-w-[200px] truncate">{app.affiliation}</td>
                             <td className="px-5 py-3 text-center">
                               <span className={`inline-block rounded-full px-3 py-1 text-[11px] font-bold ${app.status === 'Pending' ? 'bg-amber-100 text-amber-700 dark:bg-amber-900/40 dark:text-amber-500' : app.status === 'Approved' ? 'bg-green-100 text-green-700 dark:bg-green-900/40 dark:text-green-400' : 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400'}`}>{app.status}</span>
@@ -922,12 +924,16 @@ const AdminDashboardPage = () => {
                           
                           {expandedRev === app._id && (
                             <tr className="bg-slate-50/50 dark:bg-slate-800/10">
-                              <td colSpan={5} className="px-5 py-6 whitespace-normal border-t border-slate-100 dark:border-slate-800/60">
+                              <td colSpan={6} className="px-5 py-6 whitespace-normal border-t border-slate-100 dark:border-slate-800/60">
                                 <div className="grid gap-6 md:grid-cols-2 text-sm text-slate-700 dark:text-slate-300">
                                   <div className="space-y-4">
                                     <div>
                                       <p className="text-xs font-bold uppercase tracking-wide text-slate-400">Designation & Affiliation</p>
                                       <p className="mt-1 font-medium">{app.designation} at <span className="text-slate-900 dark:text-white">{app.affiliation}</span></p>
+                                    </div>
+                                    <div>
+                                      <p className="text-xs font-bold uppercase tracking-wide text-slate-400">Contact Number</p>
+                                      <p className="mt-1 font-medium text-slate-900 dark:text-white">{app.contactNumber}</p>
                                     </div>
                                     <div>
                                       <p className="text-xs font-bold uppercase tracking-wide text-slate-400">Expertise Areas</p>

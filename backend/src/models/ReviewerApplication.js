@@ -4,6 +4,7 @@ const reviewerApplicationSchema = new mongoose.Schema(
   {
     fullName: { type: String, required: true, trim: true, maxlength: 120 },
     email: { type: String, required: true, trim: true, lowercase: true, maxlength: 200 },
+    contactNumber: { type: String, required: true, trim: true, maxlength: 25 },
     affiliation: { type: String, required: true, trim: true, maxlength: 200 },
     designation: { type: String, required: true, trim: true, maxlength: 150 },
     expertiseAreas: [{ type: String, trim: true, maxlength: 80 }],

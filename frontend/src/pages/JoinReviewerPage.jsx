@@ -8,6 +8,7 @@ const JoinReviewerPage = () => {
   const [form, setForm] = useState({
     fullName: '',
     email: '',
+    contactNumber: '',
     affiliation: '',
     designation: '',
     expertiseAreas: '',
@@ -36,6 +37,7 @@ const JoinReviewerPage = () => {
       setForm({
         fullName: '',
         email: '',
+        contactNumber: '',
         affiliation: '',
         designation: '',
         expertiseAreas: '',
@@ -79,6 +81,19 @@ const JoinReviewerPage = () => {
               <input className={`${fieldClass} mt-2`} type="email" maxLength={200} value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} required />
             </label>
           </div>
+
+          <label className="block text-sm font-semibold text-slate-700 dark:text-slate-300">
+            Contact Number <span className="text-red-600">*</span>
+            <input
+              className={`${fieldClass} mt-2`}
+              type="tel"
+              maxLength={25}
+              placeholder="Example: +91 9876543210"
+              value={form.contactNumber}
+              onChange={(e) => setForm({ ...form, contactNumber: e.target.value })}
+              required
+            />
+          </label>
 
           <div className="grid gap-5 md:grid-cols-2">
             <label className="block text-sm font-semibold text-slate-700 dark:text-slate-300">
