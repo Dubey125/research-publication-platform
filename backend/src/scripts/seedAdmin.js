@@ -29,8 +29,12 @@ const seedAdmin = async () => {
       existing.name = name;
       existing.email = normalizedEmail;
       existing.password = password;
+      existing.failedLoginAttempts = 0;
+      existing.lockUntil = null;
       existing.refreshTokenHash = null;
       existing.refreshTokenExpiresAt = null;
+      existing.csrfTokenHash = null;
+      existing.csrfTokenExpiresAt = null;
       await existing.save();
 
       console.log('Admin credentials reset successfully.');

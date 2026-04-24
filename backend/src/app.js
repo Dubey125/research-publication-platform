@@ -23,6 +23,7 @@
   import contentRoutes from './routes/contentRoutes.js';
   import announcementRoutes from './routes/announcementRoutes.js';
   import reviewerRoutes from './routes/reviewerRoutes.js';
+  import { expandConfiguredOrigins, normalizeOrigin } from './utils/origins.js';
 
   const __filename = fileURLToPath(import.meta.url);
   const __dirname = path.dirname(__filename);
@@ -33,10 +34,9 @@
   app.use(enforceHttps);
 
   const defaultOrigins = ['http://localhost:5173', 'http://127.0.0.1:5173', 'http://localhost:5174', 'http://127.0.0.1:5174'];
-  const configuredOrigins = (process.env.CORS_ORIGIN || process.env.CLIENT_URL || '')
-    .split(',')
-    .map((origin) => origin.trim())
-    .filter(Boolean);
+  const configuredOrigins = expandConfiguredOrigins(process.env.CORS_ORIGIN || process.env.CLIENT_URL || '', {
+    allowHttpForBareHost: !isProduction
+  });
 
   const isProduction = process.env.NODE_ENV === 'production';
   const coopPolicy = process.env.COOP_POLICY || 'same-origin';
@@ -49,16 +49,18 @@
     : [...defaultOrigins, ...configuredOrigins];
 
   const corsOrigin = (origin, callback) => {
-    if (!origin) {
+    const normalizedOrigin = normalizeOrigin(origin);
+
+    if (!normalizedOrigin) {
       return callback(null, true);
     }
 
     // Allow any localhost origin in development, or strict check
-    if (allowedOrigins.includes(origin) || (!isProduction && origin.startsWith('http://localhost:'))) {
+    if (allowedOrigins.includes(normalizedOrigin) || (!isProduction && normalizedOrigin.startsWith('http://localhost:'))) {
       return callback(null, true);
     }
 
-    return callback(new Error('CORS origin not allowed: ' + origin));
+    return callback(new Error('CORS origin not allowed: ' + normalizedOrigin));
   };
 
   app.use(

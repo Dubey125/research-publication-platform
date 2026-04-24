@@ -1,3 +1,5 @@
+import { expandConfiguredOrigins, normalizeOrigin } from '../utils/origins.js';
+
 const localOrigins = [
   'http://localhost:5173',
   'http://127.0.0.1:5173',
@@ -6,10 +8,9 @@ const localOrigins = [
 ];
 
 const configuredOrigins = () =>
-  (process.env.CORS_ORIGIN || process.env.CLIENT_URL || '')
-    .split(',')
-    .map((origin) => origin.trim())
-    .filter(Boolean);
+  expandConfiguredOrigins(process.env.CORS_ORIGIN || process.env.CLIENT_URL || '', {
+    allowHttpForBareHost: process.env.NODE_ENV !== 'production'
+  });
 
 const allowedOrigins = () => {
   if (process.env.NODE_ENV === 'production') {
@@ -20,7 +21,7 @@ const allowedOrigins = () => {
 
 export const requireTrustedOrigin = (req, res, next) => {
   // Non-browser clients (no Origin header) are allowed in non-production for local scripts.
-  const origin = req.headers.origin;
+  const origin = normalizeOrigin(req.headers.origin);
   if (!origin) {
     if (process.env.NODE_ENV !== 'production') {
       return next();
